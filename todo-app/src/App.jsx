@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import TaskItem from './TaskItem.jsx';
-import { STORAGE_KEY, loadTasks } from './tasks.js';
+import TaskItem from './components/TaskItem.jsx';
+import { STORAGE_KEY, loadTasks } from './lib/tasks.js';
 
 export default function App() {
   const [tasks, setTasks] = useState(loadTasks);
