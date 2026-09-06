@@ -9,4 +9,4 @@
 
 ## 一覧
 
-（まだ記録がありません）
+- [0001: プロジェクト指示をCLAUDE.mdと`.claude/rules/`に分割する](./0001-split-claude-md-into-rules.md)
