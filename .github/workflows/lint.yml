@@ -3,7 +3,7 @@ name: Lint
 on:
   pull_request:
     paths:
-      - 'todo-app/**'
+      - 'front/**'
       - '.github/workflows/lint.yml'
 
 jobs:
@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: todo-app
+        working-directory: front
     steps:
       - uses: actions/checkout@v4
 
@@ -19,7 +19,7 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: todo-app/package-lock.json
+          cache-dependency-path: front/package-lock.json
 
       - run: npm ci
 
