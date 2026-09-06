@@ -310,6 +310,9 @@ async function main() {
     const iconNames = ["FaComments", "FaCodeBranch", "FaBriefcase"];
     const steps = md.sections["ステップ"].items;
     const n = steps.length;
+    if (n < 2) {
+      throw new Error(`04-agenda.md の「ステップ」は2件以上必要です（現在${n}件）`);
+    }
     const lineY = 3.55;
     const marginX = 1.1;
     const usableW = W - marginX * 2;
@@ -516,6 +519,9 @@ async function main() {
     const iconNames = ["FaSlack", "FaGithub", "FaCode", "FaMagnifyingGlass", "FaWrench"];
     const steps = md.sections["ステップ"].items;
     const n = steps.length;
+    if (n < 2) {
+      throw new Error(`07-demo-workflow.md の「ステップ」は2件以上必要です（現在${n}件）`);
+    }
     const marginX = 0.75;
     const usableW = W - marginX * 2;
     const lineY = 3.05;
@@ -578,6 +584,7 @@ async function main() {
       isTextBox: true,
     });
     s.addNotes(md.sections["Notes"].text);
+    pageNum(s, 7, false);
   }
 
   // ================= Slide 8: Before/After =================
