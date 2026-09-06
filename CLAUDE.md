@@ -12,9 +12,10 @@ npm install
 npm run dev      # 開発サーバー起動 (Vite)
 npm run build    # 本番ビルド、出力先は todo-app/dist/
 npm run preview  # 本番ビルドのプレビュー
+npm run lint      # ESLintによる静的解析
 ```
 
-このプロジェクトにはlintやtestの仕組みは整備されていません（テストランナー・ESLint設定なし）。`npm test` や `npm run lint` が存在する前提で作業しないこと。
+`npm run lint` はPull Request作成時にGitHub Actions（`.github/workflows/lint.yml`）でも自動実行されます。テストランナーは整備されていないため、`npm test` が存在する前提で作業しないこと。
 
 ## アーキテクチャ
 
