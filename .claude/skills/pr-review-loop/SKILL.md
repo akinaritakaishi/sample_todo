@@ -66,6 +66,8 @@ must/imo/nitsのいずれであっても、指摘が1件でもあれば修正し
 
 修正が終わったら1に戻り、`commit-and-pr` で再コミット・pushします（PRは既存なので新規作成ではなくpushのみで自動的に更新されます）。
 
+pushが完了したら、3で投稿した各インラインコメントに対して `mcp__github__add_reply_to_pull_request_comment` で返信し、その指摘に対して何を対応したか（対応しなかった場合はその理由）を一言で書いてください。対応済みの指摘は、GitHub MCPのスレッドresolve機能（`resolve_review_thread`、または `pull_request_review_write` の `resolve_thread`メソッド）でスレッドをresolveします（`imo`で「対応しない」と判断した場合や、ユーザーの指示で見送った場合はresolveせず、返信のみで留めてください）。
+
 ### 5. ループの終了条件
 
 - 2に戻ったレビューで指摘が0件になった時点で、その旨をPRにコメントして終了します。
