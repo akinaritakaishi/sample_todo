@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tasks — 社内タスク管理</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+    <header class="app-header">
+      <h1>Tasks</h1>
+      <p class="app-sub">今日やることを、ここに置いておく。</p>
+    </header>
+
+    <form id="add-form" class="add-form">
+      <input
+        type="text"
+        id="task-input"
+        placeholder="タスクを入力して Enter"
+        autocomplete="off"
+      >
+      <input
+        type="date"
+        id="due-input"
+        aria-label="期限"
+      >
+      <button type="submit">追加</button>
+    </form>
+
+    <div class="list-meta">
+      <span id="count-label">0件のタスク</span>
+      <button id="clear-done" class="text-button">完了済みを削除</button>
+    </div>
+
+    <ul id="task-list" class="task-list"></ul>
+
+    <p id="empty-state" class="empty-state">
+      タスクはまだありません。上の入力欄から追加してください。
+    </p>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
