@@ -1,4 +1,4 @@
-import { formatDue } from './tasks.js';
+import { formatDue } from '../lib/tasks.js';
 
 export default function TaskItem({ task, onToggle, onDelete }) {
   return (
