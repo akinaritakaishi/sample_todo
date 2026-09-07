@@ -1,3 +1,5 @@
+import seedTasksData from '../data/seed-tasks.json';
+
 export const STORAGE_KEY = 'tasks-app.tasks';
 
 const toDateString = (offsetDays) => {
@@ -7,11 +9,12 @@ const toDateString = (offsetDays) => {
 };
 
 export function createSeedTasks() {
-  return [
-    { id: crypto.randomUUID(), title: '週次レポートを提出する', due: toDateString(0), done: false },
-    { id: crypto.randomUUID(), title: '会議室を予約する', due: toDateString(1), done: false },
-    { id: crypto.randomUUID(), title: '備品発注リストを確認する', due: toDateString(5), done: false },
-  ];
+  return seedTasksData.map(({ title, offsetDays, done }) => ({
+    id: crypto.randomUUID(),
+    title,
+    due: toDateString(offsetDays),
+    done,
+  }));
 }
 
 export function loadTasks() {
