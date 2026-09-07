@@ -29,7 +29,7 @@ npm run lint      # ESLintによる静的解析
 - [`docs/Architecture.md`](./docs/Architecture.md) — アプリの構成・データフローの説明
 - [`docs/adr/`](./docs/adr/) — 設計・技術選定・運用ルールの意思決定を記録したADR（Architecture Decision Record）
 - [`docs/slides/`](./docs/slides/) — 社内勉強会用スライドのMarkdownソースと生成スクリプト
-- [`docs/demo/`](./docs/demo/) — 勉強会デモ用の架空資料（デザインガイドライン・Slackスレッド）。実在の社内規程ではなく、アプリのビルドにも含まれません
+- [`docs/demo/`](./docs/demo/) — 勉強会デモ用の架空資料（Slackスレッド）。実在の社内規程ではなく、アプリのビルドにも含まれません
 
 ## Claude Code向け設定
 
