@@ -4,7 +4,7 @@ export const STORAGE_KEY = 'tasks-app.tasks';
 
 const toDateString = (offsetDays) => {
   const d = new Date();
-  d.setDate(d.getDate() + offsetDays);
+  d.setDate(d.getDate() + (Number.isFinite(offsetDays) ? offsetDays : 0));
   return d.toISOString().slice(0, 10);
 };
 
