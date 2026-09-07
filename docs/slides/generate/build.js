@@ -891,9 +891,168 @@ async function main() {
     });
   }
 
-  // ================= Slide 11: Section divider - 後半 =================
+  // ================= Slide 11: 種明かし =================
   {
-    const md = load("11-part2-divider.md");
+    const md = load("11-behind-the-scenes.md");
+    const s = pres.addSlide();
+    lightBg(s);
+    kicker(s, md.kicker);
+    title(s, md.title);
+    s.addText(md.intro, {
+      x: 0.6,
+      y: 1.65,
+      w: 12.1,
+      h: 0.5,
+      fontFace: BODY_FONT,
+      fontSize: 14,
+      italic: true,
+      color: MUTED,
+      margin: 0,
+      isTextBox: true,
+    });
+    const iconNames = ["FaListCheck", "FaShieldHalved", "FaCodeBranch", "FaUserGear"];
+    const items = md.sections["要素"].items;
+    const cols = 2,
+      cardW = 5.85,
+      cardH = 2.05,
+      gx = 0.6,
+      gy = 2.35,
+      gapX = 0.3,
+      gapY = 0.3;
+    for (let i = 0; i < items.length; i++) {
+      const col = i % cols,
+        row = Math.floor(i / cols);
+      const x = gx + col * (cardW + gapX);
+      const y = gy + row * (cardH + gapY);
+      s.addShape(pres.ShapeType.roundRect, {
+        x,
+        y,
+        w: cardW,
+        h: cardH,
+        rectRadius: 0.12,
+        fill: { color: CARD },
+        line: { type: "none" },
+        shadow: { type: "outer", color: "1E2761", opacity: 0.1, blur: 8, offset: 2, angle: 90 },
+      });
+      await iconCircle(s, iconNames[i], { x: x + 0.3, y: y + 0.32, d: 0.85, dark: false });
+      s.addText(items[i].title, {
+        x: x + 1.35,
+        y: y + 0.24,
+        w: cardW - 1.6,
+        h: 0.45,
+        fontFace: TITLE_FONT,
+        fontSize: 17,
+        bold: true,
+        color: NAVY,
+        margin: 0,
+        isTextBox: true,
+      });
+      s.addText(items[i].body, {
+        x: x + 1.35,
+        y: y + 0.78,
+        w: cardW - 1.6,
+        h: 1.05,
+        fontFace: BODY_FONT,
+        fontSize: 13,
+        color: CHARCOAL,
+        margin: 0,
+        isTextBox: true,
+      });
+    }
+    pageNum(s, 11, false);
+  }
+
+  // ================= Slide 12: 並列実行とコスト =================
+  {
+    const md = load("12-parallel-scale.md");
+    const s = pres.addSlide();
+    darkBg(s);
+    s.addShape(pres.ShapeType.ellipse, {
+      x: -3,
+      y: -3,
+      w: 7,
+      h: 7,
+      fill: { color: NAVY_SOFT },
+      line: { type: "none" },
+    });
+    kicker(s, md.kicker, { color: CYAN });
+    s.addText(md.title, {
+      x: 0.6,
+      y: 1.1,
+      w: 12,
+      h: 0.7,
+      fontFace: TITLE_FONT,
+      fontSize: 26,
+      bold: true,
+      color: WHITE,
+      margin: 0,
+      isTextBox: true,
+    });
+    s.addText(md.intro, {
+      x: 0.6,
+      y: 1.75,
+      w: 12,
+      h: 0.4,
+      fontFace: BODY_FONT,
+      fontSize: 14,
+      italic: true,
+      color: ICE,
+      margin: 0,
+      isTextBox: true,
+    });
+    s.addText(md.sections["Before数値"].text, {
+      x: 0.9,
+      y: 2.7,
+      w: 5.2,
+      h: 1.4,
+      fontFace: TITLE_FONT,
+      fontSize: 34,
+      bold: true,
+      color: "8892C2",
+      margin: 0,
+      isTextBox: true,
+    });
+    await iconCircle(s, "FaArrowRight", { x: 6.25, y: 3.05, d: 0.9, dark: true, circleColor: CYAN, iconColor: NAVY });
+    s.addText(md.sections["After数値"].text, {
+      x: 7.5,
+      y: 2.7,
+      w: 5.2,
+      h: 1.4,
+      fontFace: TITLE_FONT,
+      fontSize: 34,
+      bold: true,
+      color: CYAN,
+      margin: 0,
+      isTextBox: true,
+    });
+    s.addText(md.sections["補足1"].text, {
+      x: 0.9,
+      y: 4.55,
+      w: 11,
+      h: 0.7,
+      fontFace: BODY_FONT,
+      fontSize: 16,
+      color: ICE,
+      margin: 0,
+      isTextBox: true,
+    });
+    s.addText(md.sections["補足2"].text, {
+      x: 0.9,
+      y: 5.55,
+      w: 11,
+      h: 0.9,
+      fontFace: BODY_FONT,
+      fontSize: 14,
+      italic: true,
+      color: "AEB9E6",
+      margin: 0,
+      isTextBox: true,
+    });
+  }
+
+  // ================= Slide 13: Section divider - 後半 =================
+  {
+    const md = load("13-part2-divider.md");
     const s = pres.addSlide();
     darkBg(s);
     s.addShape(pres.ShapeType.ellipse, {
@@ -944,9 +1103,9 @@ async function main() {
     });
   }
 
-  // ================= Slide 12: AIは開発だけじゃない =================
+  // ================= Slide 14: AIは開発だけじゃない =================
   {
-    const md = load("12-beyond-development.md");
+    const md = load("14-beyond-development.md");
     const s = pres.addSlide();
     lightBg(s);
     kicker(s, md.kicker);
@@ -987,12 +1146,12 @@ async function main() {
         isTextBox: true,
       });
     }
-    pageNum(s, 12, false);
+    pageNum(s, 14, false);
   }
 
-  // ================= Slide 13: 職種別 =================
+  // ================= Slide 15: 職種別 =================
   {
-    const md = load("13-roles.md");
+    const md = load("15-roles.md");
     const s = pres.addSlide();
     lightBg(s);
     kicker(s, md.kicker);
@@ -1046,12 +1205,12 @@ async function main() {
         isTextBox: true,
       });
     }
-    pageNum(s, 13, false);
+    pageNum(s, 15, false);
   }
 
-  // ================= Slide 14: まとめ =================
+  // ================= Slide 16: まとめ =================
   {
-    const md = load("14-wrap-up.md");
+    const md = load("16-wrap-up.md");
     const s = pres.addSlide();
     darkBg(s);
     s.addShape(pres.ShapeType.ellipse, {

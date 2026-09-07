@@ -6,7 +6,7 @@
 
 ## ファイル構成
 
-- `01-title.md` 〜 `14-wrap-up.md` … 各スライドの内容（ファイル名の連番がスライド順）
+- `01-title.md` 〜 `16-wrap-up.md` … 各スライドの内容（ファイル名の連番がスライド順）
 - `generate/` … このMarkdownからPowerPoint（`.pptx`）を生成するNode.jsスクリプト
 
 ## Markdownの書式
