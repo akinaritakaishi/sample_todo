@@ -1,0 +1,16 @@
+{
+  "name": "sample-todo-chat-mcp-server",
+  "type": "module",
+  "private": true,
+  "version": "0.1.0",
+  "bin": {
+    "sample-todo-chat-mcp-server": "./index.js"
+  },
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "zod": "^4.0.0"
+  }
+}

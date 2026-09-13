@@ -35,7 +35,12 @@ async function main() {
 
   let failed = null;
   try {
-    await page.goto(url, { waitUntil: 'networkidle', timeout: 15000 });
+    // Nuxtのdevサーバーはdevtools/HMR用のWebSocketを張り続けるため、
+    // 'networkidle'は成立しない（常に何らかの接続が生きている）。
+    // 'load'まで待ってから、初期データ取得・ハイドレーションの完了を
+    // 待つ短い猶予を置く。
+    await page.goto(url, { waitUntil: 'load', timeout: 15000 });
+    await page.waitForTimeout(500);
     await page.screenshot({ path: `${outDir}/screenshot.png`, fullPage: true });
   } catch (err) {
     failed = err.message;
