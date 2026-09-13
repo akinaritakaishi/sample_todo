@@ -11,4 +11,4 @@ paths:
 - 画面のUI・挙動が変わった場合: `docs/screens/<画面名>.md`と、埋め込まれているスクリーンショット`docs/screens/<画面名>.png`を更新する（撮影方法は`.claude/skills/verify-front/`を参照）。新しい画面を追加した場合は`docs/screens/README.md`の一覧にも追記する。
 - APIのエンドポイント・リクエスト/レスポンスの型が変わった場合: 変更したルートファイル（`front/server/api/**/*.js`）の`defineRouteMeta`を更新した上で、`cd front && npm run generate:openapi`を実行し`docs/api/openapi.json`を再生成してコミットに含める。`docs/api/openapi.json`を直接手編集しないこと（詳細は`docs/api/README.md`参照）。
 
-`docs/pr-screenshots/`はPRごとの動作確認の証跡（履歴）であり、`docs/screens/`とは別物（`docs/screens/README.md`参照）。両者を混同しないこと。
+UIに影響する変更を含むPRでは、更新した`docs/screens/<画面名>.png`をPR本文にもMarkdown画像として埋め込む（`.claude/skills/commit-and-pr/SKILL.md`5.1節、ADR 0006）。PRごとに別のスクリーンショットを保存するアーカイブは持たない。

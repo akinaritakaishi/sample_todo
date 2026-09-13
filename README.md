@@ -42,7 +42,6 @@ npm start
 - [`docs/screens/`](./docs/screens/) — 画面ごとの仕様書（UI要素・呼び出すAPI・スクリーンショット）
 - [`docs/api/openapi.json`](./docs/api/openapi.json) — APIのOpenAPI仕様（`front/server/api/`の`defineRouteMeta`から自動生成、詳細は[`docs/api/README.md`](./docs/api/README.md)）
 - [`docs/adr/`](./docs/adr/) — 設計・技術選定・運用ルールの意思決定を記録したADR（Architecture Decision Record）
-- [`docs/pr-screenshots/`](./docs/pr-screenshots/) — Pull Requestごとの動作確認スクリーンショットの証跡
 - [`docs/demo/`](./docs/demo/) — 勉強会デモ用の架空資料（Slackスレッド）。実在の社内規程ではなく、アプリのビルドにも含まれません
 
 ## Claude Code向け設定
