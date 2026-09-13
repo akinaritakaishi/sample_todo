@@ -1,7 +1,9 @@
 # ADR 0004: 画面仕様書(docs/screens)とAPI仕様(OpenAPI)を整備し、変更時の更新を必須にする
 
-- ステータス: 承認
+- ステータス: 承認（OpenAPIドキュメントの作成方式はADR 0005で変更）
 - 日付: 2026-09-13
+
+> **注記（2026-09-13）**: 本ADRで「手書きのOpenAPIドキュメント」として採用した`docs/api/openapi.yaml`は、[ADR 0005](./0005-generate-openapi-from-nitro-route-meta.md)によりNitroの`defineRouteMeta`からの自動生成（`docs/api/openapi.json`）に置き換えられた。`docs/screens/`に関する決定（画面仕様書の新設）は変更されていない。
 
 ## コンテキスト
 

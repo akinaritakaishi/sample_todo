@@ -33,7 +33,7 @@
 | タスク削除（×ボタン） | `DELETE /api/tasks/{id}` |
 | 完了済みを削除 | `POST /api/tasks/clear-done` |
 
-いずれの操作も、APIを呼んだ後に`refresh()`でタスク一覧を再取得して画面に反映する（詳細は`docs/api/openapi.yaml`を参照）。
+いずれの操作も、APIを呼んだ後に`refresh()`でタスク一覧を再取得して画面に反映する（詳細は`docs/api/openapi.json`を参照）。
 
 ## データの型
 

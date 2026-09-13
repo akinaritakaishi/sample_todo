@@ -28,7 +28,7 @@
 | 画面表示 | `GET /api/chat/messages` |
 | メッセージ送信 | `POST /api/chat/messages` |
 
-送信後は`refresh()`でメッセージ一覧を再取得して画面に反映する（詳細は`docs/api/openapi.yaml`を参照）。
+送信後は`refresh()`でメッセージ一覧を再取得して画面に反映する（詳細は`docs/api/openapi.json`を参照）。
 
 ## データの型
 

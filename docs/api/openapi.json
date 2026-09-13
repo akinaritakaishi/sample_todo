@@ -1,0 +1,370 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "sample_todo API",
+    "version": "1.0.0",
+    "description": "front/(Nuxtサーバー)が提供するAPI。ToDoタスクとチャットメッセージのCRUDを行う。各エンドポイントの仕様は対応するserver/api配下のファイルのdefineRouteMetaから生成される。"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "ローカル開発/本番プレビューサーバー"
+    }
+  ],
+  "paths": {
+    "/api/chat/messages": {
+      "get": {
+        "tags": [
+          "chat"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "メッセージ一覧",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ChatMessage"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "チャットメッセージ一覧を取得する",
+        "description": "投稿順（古い順）で全件返す。"
+      },
+      "post": {
+        "tags": [
+          "chat"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "投稿されたメッセージ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChatMessage"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "textが空、または未指定",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "summary": "チャットメッセージを投稿する",
+        "description": "mcp-server/のMCPサーバーからもこのエンドポイントを呼び出してメッセージを投稿する。",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateChatMessageRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/tasks/{id}": {
+      "delete": {
+        "tags": [
+          "tasks"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "削除結果",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  },
+                  "required": [
+                    "ok"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "summary": "タスクを削除する",
+        "description": "指定したidのタスクが存在しない場合も冪等に成功扱いとする。"
+      },
+      "patch": {
+        "tags": [
+          "tasks"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "更新後のタスク",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Task"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "指定したidのタスクが存在しない",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "summary": "タスクの完了状態を切り替える",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTaskDoneRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/tasks/clear-done": {
+      "post": {
+        "tags": [
+          "tasks"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "削除後に残っているタスク一覧",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Task"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "完了済みのタスクを一括削除する"
+      }
+    },
+    "/api/tasks": {
+      "get": {
+        "tags": [
+          "tasks"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "タスク一覧",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Task"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "タスク一覧を取得する",
+        "description": "保存済みのタスクが無い場合はシードデータ（server/data/seed-tasks.json）から生成して返す。"
+      },
+      "post": {
+        "tags": [
+          "tasks"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "追加されたタスク",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Task"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "titleが空、または未指定",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "summary": "タスクを追加する",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTaskRequest"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Task": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string"
+          },
+          "due": {
+            "type": "string",
+            "description": "ISO形式の日付文字列（YYYY-MM-DD）。期限未設定の場合は空文字。",
+            "example": "2026-09-13"
+          },
+          "done": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "due",
+          "done"
+        ]
+      },
+      "CreateTaskRequest": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "due": {
+            "type": "string",
+            "description": "ISO形式の日付文字列（YYYY-MM-DD）。省略可。"
+          }
+        },
+        "required": [
+          "title"
+        ]
+      },
+      "UpdateTaskDoneRequest": {
+        "type": "object",
+        "properties": {
+          "done": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "done"
+        ]
+      },
+      "ChatMessage": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "author": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "author",
+          "text",
+          "createdAt"
+        ]
+      },
+      "CreateChatMessageRequest": {
+        "type": "object",
+        "properties": {
+          "author": {
+            "type": "string",
+            "description": "省略時は「あなた」になる。"
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "text"
+        ]
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "statusCode": {
+            "type": "integer"
+          },
+          "statusMessage": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "statusCode",
+          "statusMessage"
+        ]
+      }
+    }
+  }
+}

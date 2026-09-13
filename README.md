@@ -11,6 +11,7 @@ npm run dev      # 開発サーバー起動 (Nuxt)
 npm run build    # 本番ビルド（front/.output/ に出力）
 npm run preview  # 本番ビルドのプレビュー
 npm run lint      # ESLintによる静的解析
+npm run generate:openapi  # docs/api/openapi.json を再生成
 ```
 
 テストランナーは整備されていないため、`npm test`は存在しません。
@@ -39,7 +40,7 @@ npm start
 
 - [`docs/Architecture.md`](./docs/Architecture.md) — アプリの構成・データフローの説明
 - [`docs/screens/`](./docs/screens/) — 画面ごとの仕様書（UI要素・呼び出すAPI・スクリーンショット）
-- [`docs/api/openapi.yaml`](./docs/api/openapi.yaml) — APIのOpenAPI仕様
+- [`docs/api/openapi.json`](./docs/api/openapi.json) — APIのOpenAPI仕様（`front/server/api/`の`defineRouteMeta`から自動生成、詳細は[`docs/api/README.md`](./docs/api/README.md)）
 - [`docs/adr/`](./docs/adr/) — 設計・技術選定・運用ルールの意思決定を記録したADR（Architecture Decision Record）
 - [`docs/pr-screenshots/`](./docs/pr-screenshots/) — Pull Requestごとの動作確認スクリーンショットの証跡
 - [`docs/demo/`](./docs/demo/) — 勉強会デモ用の架空資料（Slackスレッド）。実在の社内規程ではなく、アプリのビルドにも含まれません
