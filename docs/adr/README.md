@@ -10,3 +10,5 @@
 ## 一覧
 
 - [0001: プロジェクト指示をCLAUDE.mdと`.claude/rules/`に分割する](./0001-split-claude-md-into-rules.md)
+- [0002: front/をNuxt(Vue)へ移行し、チャットツールとMCPサーバーを追加する](./0002-migrate-to-nuxt-and-add-chat-mcp.md)
+- [0003: UIに影響する変更ではPR本文へのスクリーンショット埋め込みを必須にする](./0003-require-pr-screenshots-for-ui-changes.md)
