@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# front/(Vite開発サーバー)を起動し、Playwrightでスクリーンショットとconsoleログを採取してから
+# front/(Nuxt開発サーバー)を起動し、Playwrightでスクリーンショットとconsoleログを採取してから
 # 開発サーバーを確実に停止する。成功・失敗を問わずサーバープロセスをリークさせないことが目的。
 #
 # 使い方:
@@ -33,10 +33,10 @@ DEV_LOG="$OUT_DIR/dev-server.log"
 DEV_PID=""
 
 cleanup() {
-  # `npm run dev` は内部でvite本体を子プロセスとして起動するため、DEV_PIDだけを
-  # killしてもvite本体が残ってしまう。setsidで新しいセッションを作って起動し、
-  # DEV_PID(セッションリーダー)に対して「-」付きで送ることでプロセスグループ
-  # 全体（npmとviteの両方）に確実にシグナルを届ける。
+  # `npm run dev` は内部でNuxt/Nitro本体を子プロセス（forkモード）として起動するため、
+  # DEV_PIDだけをkillしても本体プロセスが残ってしまう。setsidで新しいセッションを作って
+  # 起動し、DEV_PID(セッションリーダー)に対して「-」付きで送ることでプロセスグループ
+  # 全体に確実にシグナルを届ける。
   if [ -n "$DEV_PID" ] && kill -0 "$DEV_PID" 2>/dev/null; then
     kill -TERM -- "-$DEV_PID" 2>/dev/null || kill "$DEV_PID" 2>/dev/null || true
     wait "$DEV_PID" 2>/dev/null || true
@@ -45,7 +45,7 @@ cleanup() {
 trap cleanup EXIT
 
 echo "==> devサーバーを起動します (port=$PORT)"
-setsid bash -c "cd '$FRONT_DIR' && exec npm run dev -- --port '$PORT' --strictPort" > "$DEV_LOG" 2>&1 &
+setsid bash -c "cd '$FRONT_DIR' && exec npm run dev -- --port '$PORT'" > "$DEV_LOG" 2>&1 &
 DEV_PID=$!
 
 READY=0

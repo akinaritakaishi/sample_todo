@@ -1,44 +1,93 @@
 # Architecture
 
-`front/` はルーティングなし・バックエンドなし・外部の状態管理ライブラリなしの、React 18 + Vite によるシングルページアプリ（タスク管理ツール）です。サーバーは存在せず、永続化はすべてクライアント側の `localStorage`（キーは `STORAGE_KEY` の値）で行われます。
+このリポジトリには2つのアプリケーションがある。
 
-## ディレクトリ構成
+- `front/` — Nuxt 4 (Vue 3) 製のWebアプリ。ToDo管理画面（`/`）とチャットツール画面（`/chat`）を持つ。API通信・永続化はサーバー側（`server/`配下のNuxtサーバー）で行う。
+- `mcp-server/` — `front/`のチャットAPIを読み書きするMCPサーバー（stdio）。独立したNode.jsプロジェクト。
+
+## front/ のディレクトリ構成
 
 ```
 front/
-  index.html
+  nuxt.config.ts
   package.json
-  src/
-    main.jsx            # エントリポイント
-    App.jsx             # 状態とロジック
-    style.css           # グローバルスタイル
+  app/
+    app.vue              # レイアウト（ナビゲーション + <NuxtPage />）
+    pages/
+      index.vue          # ToDo画面
+      chat.vue           # チャット画面
     components/
-      TaskItem.jsx       # タスク1件分の表示
-    lib/
-      tasks.js           # データ層
+      TaskItem.vue       # タスク1件分の表示
+    utils/
+      tasks.js           # formatDue()
+      chat.js            # formatTime()
+    assets/
+      css/
+        main.css         # グローバルスタイル
+  server/
+    api/
+      tasks/
+        index.get.js       # タスク一覧取得
+        index.post.js      # タスク追加
+        [id].patch.js       # 完了状態の切替
+        [id].delete.js      # タスク削除
+        clear-done.post.js  # 完了済み一括削除
+      chat/
+        messages.get.js    # メッセージ一覧取得
+        messages.post.js   # メッセージ投稿
+    utils/
+      json-store.js       # front/.data/ 配下のJSONファイル読み書き
+      task-store.js        # タスクのデータ層
+      chat-store.js         # チャットメッセージのデータ層
     data/
-      seed-tasks.json     # 初期データ（シードデータ）定義
+      seed-tasks.json     # タスクの初期データ（シードデータ）定義
 ```
 
 ## 各ファイルの役割
 
-- `src/App.jsx` — 状態（`tasks`、フォーム入力）と全ての変更ロジック（追加・完了切替・削除・完了済み一括削除）を `useState` で保持する。`useEffect` により `tasks` の変更のたびに `localStorage` へ保存する。タスク状態を変更するのはここだけであり、`TaskItem` は表示専用で `onToggle`/`onDelete` の props 経由で呼び出す。
-- `src/lib/tasks.js` — データ層。`STORAGE_KEY`、`loadTasks()`（localStorageの読み込み・検証を行い、値が無い/不正な場合はシードデータにフォールバック）、`createSeedTasks()`、`formatDue()` を提供する。タスクの型は `{ id, title, due, done }` で、`due` はISO形式の日付文字列（`YYYY-MM-DD`）または空文字。`createSeedTasks()` は `src/data/seed-tasks.json` を読み込み、各エントリの `offsetDays`（今日からの相対日数）を `due` の日付文字列に変換して返す。
-- `src/data/seed-tasks.json` — 初期データ（シードデータ）の定義ファイル。各要素は `{ title, offsetDays, done }`。ここを編集することでコードを変更せずに初期表示するタスクを変更できる。
-- `src/components/TaskItem.jsx` — タスク1件分の表示のみを行う。propsのみに依存する。
-- `src/main.jsx` — Reactのエントリポイント。`App` をルートにマウントする。
-- `src/style.css` — `:root` のカスタムプロパティを使ったプレーンCSS。
+### クライアント側（`app/`）
 
-## データフロー
+- `app/app.vue` — 全ページ共通のナビゲーション（Tasks / Chat）と `<NuxtPage />` を配置する。
+- `app/pages/index.vue` — `useFetch('/api/tasks')` でタスク一覧を取得し、フォーム入力（`title`/`due`）を保持する。追加・完了切替・削除・完了済み一括削除の操作は、それぞれ対応する`server/api/tasks/*`エンドポイントを`$fetch`で呼んだ後に`refresh()`でタスク一覧を再取得する。タスク状態を変更するのはここだけであり、`TaskItem`は表示専用で`toggle`/`delete`イベント経由で呼び出される。
+- `app/pages/chat.vue` — `useFetch('/api/chat/messages')`でメッセージ一覧を取得し、投稿者名（`author`）と本文（`text`）を保持する。送信時に`server/api/chat/messages.post.js`を呼び、`refresh()`で一覧を再取得する。
+- `app/components/TaskItem.vue` — タスク1件分の表示のみを行う。propsのみに依存する。
+- `app/utils/tasks.js` / `app/utils/chat.js` — 表示用フォーマット関数（`due`の日付表示、メッセージ時刻表示）。Nuxtの自動importにより各ページ・コンポーネントから直接呼び出せる。
 
-1. 初回マウント時、`App.jsx` が `lib/tasks.js` の `loadTasks()` で `localStorage` からタスク一覧を読み込む（無い/不正な場合はシードデータ）。
-2. ユーザー操作（追加・完了切替・削除・完了済み一括削除）は `App.jsx` 内のハンドラが `tasks` state を更新する。
-3. `tasks` の変更を `useEffect` が検知し、`localStorage` に保存する。
-4. `tasks` の再描画により `TaskItem` に props が渡り、一覧が更新される。
+### サーバー側（`server/`）
+
+- `server/api/tasks/*` — タスクのCRUD API。リクエストの検証を行い、`server/utils/task-store.js`を呼び出す。
+- `server/api/chat/*` — チャットメッセージの取得・投稿API。`server/utils/chat-store.js`を呼び出す。
+- `server/utils/json-store.js` — `front/.data/`配下のJSONファイル（gitignore対象）を読み書きする共通ユーティリティ。ファイルが無ければ呼び出し側にフォールバック値を返す。
+- `server/utils/task-store.js` — タスクのデータ層。`.data/tasks.json`が無ければ`server/data/seed-tasks.json`からシードデータを生成する。タスクの型は`{ id, title, due, done }`で、`due`はISO形式の日付文字列（`YYYY-MM-DD`）または空文字。
+- `server/utils/chat-store.js` — チャットメッセージのデータ層。`.data/chat-messages.json`に保存する。メッセージの型は`{ id, author, text, createdAt }`。
+- `server/data/seed-tasks.json` — タスクの初期データ（シードデータ）の定義。各要素は`{ title, offsetDays, done }`。ここを編集することでコードを変更せずに初期表示するタスクを変更できる。
+
+永続化はいずれもNuxtサーバープロセス内のJSONファイル（`front/.data/`配下）で行われ、ブラウザの`localStorage`は使わない。そのため複数タブ・複数ブラウザから同じデータを参照できる。
+
+## データフロー（ToDo）
+
+1. ページ読み込み時、`index.vue`が`useFetch('/api/tasks')`でタスク一覧を取得する（サーバー側は`.data/tasks.json`が無ければシードデータで初期化する）。
+2. ユーザー操作（追加・完了切替・削除・完了済み一括削除）は、対応する`server/api/tasks/*`エンドポイントへの`$fetch`呼び出しとなる。
+3. サーバーは`task-store.js`経由で`.data/tasks.json`を更新する。
+4. クライアントは`refresh()`でタスク一覧を再取得し、画面を更新する。
 
 ```mermaid
 flowchart LR
-    A[App.jsx: ユーザー操作] --> B[tasks stateを更新]
-    B --> C[localStorageへ保存]
-    B --> D[TaskItem再描画]
+    A[index.vue: ユーザー操作] --> B[server/api/tasks/* へ$fetch]
+    B --> C[task-store.jsが.data/tasks.jsonを更新]
+    B --> D[refresh\(\)でタスク一覧を再取得]
 ```
+
+## データフロー（チャット・MCP連携）
+
+チャットメッセージの読み書きは、Webブラウザからだけでなく`mcp-server/`のMCPサーバー経由でも行える。両者は同じ`server/api/chat/messages`エンドポイントを叩くため、どちらから投稿してもチャット画面・MCPクライアントの両方に反映される。
+
+```mermaid
+flowchart LR
+    A[chat.vue] -- GET/POST /api/chat/messages --> C[server/api/chat/*]
+    D[MCPクライアント] -- list_chat_messages / send_chat_message --> E[mcp-server/index.js]
+    E -- GET/POST /api/chat/messages --> C
+    C --> F[chat-store.jsが.data/chat-messages.jsonを更新]
+```
+
+- `mcp-server/index.js` — `@modelcontextprotocol/sdk`によるMCPサーバー（stdio）。`list_chat_messages`（メッセージ一覧取得）と`send_chat_message`（メッセージ投稿）の2ツールを提供し、いずれも`front/`のHTTP API（既定値`http://localhost:3000`、`CHAT_API_BASE_URL`環境変数で変更可能）を呼び出す。チャットのデータストア（JSONファイル）に直接アクセスすることはない。
