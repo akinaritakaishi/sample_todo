@@ -25,7 +25,7 @@ npm start        # MCPサーバーをstdioで起動（先にfront/の開発/本�
 
 ## アーキテクチャ
 
-詳細な説明は `docs/Architecture.md` を参照。要点のみここに記す。
+詳細な説明は `docs/Architecture.md` を参照。画面ごとの仕様は `docs/screens/`、APIの仕様は `docs/api/openapi.yaml` を参照。要点のみここに記す。
 
 `front/` は Nuxt 4 (Vue 3) 製のアプリで、ToDo画面（`/`）とチャットツール画面（`/chat`）の2ページを持つ。ロジックはクライアント側の `app/` とサーバー側の `server/` に分かれる。
 

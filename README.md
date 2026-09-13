@@ -38,7 +38,10 @@ npm start
 ## docs
 
 - [`docs/Architecture.md`](./docs/Architecture.md) — アプリの構成・データフローの説明
+- [`docs/screens/`](./docs/screens/) — 画面ごとの仕様書（UI要素・呼び出すAPI・スクリーンショット）
+- [`docs/api/openapi.yaml`](./docs/api/openapi.yaml) — APIのOpenAPI仕様
 - [`docs/adr/`](./docs/adr/) — 設計・技術選定・運用ルールの意思決定を記録したADR（Architecture Decision Record）
+- [`docs/pr-screenshots/`](./docs/pr-screenshots/) — Pull Requestごとの動作確認スクリーンショットの証跡
 - [`docs/demo/`](./docs/demo/) — 勉強会デモ用の架空資料（Slackスレッド）。実在の社内規程ではなく、アプリのビルドにも含まれません
 
 ## Claude Code向け設定
