@@ -17,7 +17,17 @@
         "tags": [
           "chat"
         ],
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "room",
+            "in": "query",
+            "required": false,
+            "description": "取得するチャンネルのID。省略時は\"general\"",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "メッセージ一覧",
@@ -31,10 +41,20 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "roomが未知のチャンネルID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         },
         "summary": "チャットメッセージ一覧を取得する",
-        "description": "投稿順（古い順）で全件返す。"
+        "description": "指定チャンネルのメッセージを投稿順（古い順）で全件返す。"
       },
       "post": {
         "tags": [
@@ -53,7 +73,7 @@
             }
           },
           "400": {
-            "description": "textが空、または未指定",
+            "description": "textが空・未指定、またはroomが未知のチャンネルID",
             "content": {
               "application/json": {
                 "schema": {
@@ -75,6 +95,31 @@
             }
           }
         }
+      }
+    },
+    "/api/chat/rooms": {
+      "get": {
+        "tags": [
+          "chat"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "チャンネル一覧",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ChatRoom"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "チャンネル一覧を取得する",
+        "description": "固定のチャンネル一覧（id・表示名・アイコン）を返す。ユーザーによる作成・編集はできない。"
       }
     },
     "/api/tasks/{id}": {
@@ -316,6 +361,10 @@
             "type": "string",
             "format": "uuid"
           },
+          "room": {
+            "type": "string",
+            "description": "チャンネルID。省略時は\"general\"。"
+          },
           "author": {
             "type": "string"
           },
@@ -329,6 +378,7 @@
         },
         "required": [
           "id",
+          "room",
           "author",
           "text",
           "createdAt"
@@ -337,6 +387,10 @@
       "CreateChatMessageRequest": {
         "type": "object",
         "properties": {
+          "room": {
+            "type": "string",
+            "description": "投稿先チャンネルID。省略時は\"general\"。"
+          },
           "author": {
             "type": "string",
             "description": "省略時は「あなた」になる。"
@@ -348,6 +402,26 @@
         },
         "required": [
           "text"
+        ]
+      },
+      "ChatRoom": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "icon": {
+            "type": "string",
+            "description": "表示用の絵文字アイコン。"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "icon"
         ]
       },
       "Error": {

@@ -31,6 +31,10 @@ body {
   margin: 0 auto;
 }
 
+.app-shell.app-shell-wide {
+  max-width: 880px;
+}
+
 .app-nav {
   display: flex;
   gap: 4px;
@@ -232,12 +236,122 @@ body {
   background: #fdecea;
 }
 
+.chat-layout {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.chat-rooms {
+  flex: 0 0 176px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.chat-rooms-title {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-text-muted);
+}
+
+.chat-room-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.chat-room-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 10px;
+  border: none;
+  border-radius: 6px;
+  background: none;
+  color: var(--color-text-muted);
+  font: inherit;
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.chat-room-button:hover {
+  background: var(--color-accent-bg);
+  color: var(--color-accent-dark);
+}
+
+.chat-room-button.active {
+  background: var(--color-accent-bg);
+  color: var(--color-accent-dark);
+  font-weight: 600;
+}
+
+.chat-room-icon {
+  flex-shrink: 0;
+}
+
+.chat-room-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chat-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.chat-room-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.chat-room-header-icon {
+  font-size: 20px;
+}
+
+.chat-room-header-name {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
 .chat-message {
+  display: flex;
+  gap: 10px;
   padding: 10px 14px;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 8px;
   box-shadow: var(--shadow-card);
+}
+
+.chat-avatar {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.chat-message-body {
+  flex: 1;
+  min-width: 0;
 }
 
 .chat-message-meta {
@@ -272,4 +386,20 @@ body {
 
 .empty-state.visible {
   display: block;
+}
+
+@media (max-width: 640px) {
+  .chat-layout {
+    flex-direction: column;
+  }
+
+  .chat-rooms {
+    flex: none;
+    width: 100%;
+  }
+
+  .chat-room-list {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
 }

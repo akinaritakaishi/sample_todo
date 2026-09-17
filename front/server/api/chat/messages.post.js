@@ -17,7 +17,7 @@ defineRouteMeta({
         content: { 'application/json': { schema: { $ref: '#/components/schemas/ChatMessage' } } },
       },
       400: {
-        description: 'textが空、または未指定',
+        description: 'textが空・未指定、またはroomが未知のチャンネルID',
         content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } },
       },
     },
@@ -31,5 +31,10 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'text is required' })
   }
   const author = typeof body?.author === 'string' && body.author.trim() ? body.author.trim() : 'あなた'
-  return await addMessage({ author, text })
+  const room = typeof body?.room === 'string' && body.room.trim() ? body.room.trim() : ''
+  const message = await addMessage({ room, author, text })
+  if (!message) {
+    throw createError({ statusCode: 400, statusMessage: 'unknown room' })
+  }
+  return message
 })

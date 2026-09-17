@@ -4,7 +4,16 @@ defineRouteMeta({
   openAPI: {
     tags: ['chat'],
     summary: 'チャットメッセージ一覧を取得する',
-    description: '投稿順（古い順）で全件返す。',
+    description: '指定チャンネルのメッセージを投稿順（古い順）で全件返す。',
+    parameters: [
+      {
+        name: 'room',
+        in: 'query',
+        required: false,
+        description: '取得するチャンネルのID。省略時は"general"',
+        schema: { type: 'string' },
+      },
+    ],
     responses: {
       200: {
         description: 'メッセージ一覧',
@@ -14,10 +23,20 @@ defineRouteMeta({
           },
         },
       },
+      400: {
+        description: 'roomが未知のチャンネルID',
+        content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } },
+      },
     },
   },
 })
 
-export default defineEventHandler(async () => {
-  return await getMessages()
+export default defineEventHandler(async (event) => {
+  const query = getQuery(event)
+  const room = typeof query.room === 'string' ? query.room.trim() : ''
+  const messages = await getMessages(room)
+  if (!messages) {
+    throw createError({ statusCode: 400, statusMessage: 'unknown room' })
+  }
+  return messages
 })

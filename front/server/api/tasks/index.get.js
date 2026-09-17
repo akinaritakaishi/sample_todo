@@ -39,19 +39,30 @@ defineRouteMeta({
             type: 'object',
             properties: {
               id: { type: 'string', format: 'uuid' },
+              room: { type: 'string', description: 'チャンネルID。省略時は"general"。' },
               author: { type: 'string' },
               text: { type: 'string' },
               createdAt: { type: 'string', format: 'date-time' },
             },
-            required: ['id', 'author', 'text', 'createdAt'],
+            required: ['id', 'room', 'author', 'text', 'createdAt'],
           },
           CreateChatMessageRequest: {
             type: 'object',
             properties: {
+              room: { type: 'string', description: '投稿先チャンネルID。省略時は"general"。' },
               author: { type: 'string', description: '省略時は「あなた」になる。' },
               text: { type: 'string', minLength: 1 },
             },
             required: ['text'],
+          },
+          ChatRoom: {
+            type: 'object',
+            properties: {
+              id: { type: 'string' },
+              name: { type: 'string' },
+              icon: { type: 'string', description: '表示用の絵文字アイコン。' },
+            },
+            required: ['id', 'name', 'icon'],
           },
           Error: {
             type: 'object',

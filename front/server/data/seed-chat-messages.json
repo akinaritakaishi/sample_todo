@@ -1,0 +1,17 @@
+[
+  { "room": "general", "author": "佐藤", "text": "おはようございます、今日もよろしくお願いします!", "offsetMinutes": -300 },
+  { "room": "general", "author": "田中", "text": "おはようございます。今日は10時から週次定例ですね", "offsetMinutes": -299 },
+  { "room": "general", "author": "佐藤", "text": "はい、議題まとめておきます", "offsetMinutes": -298 },
+
+  { "room": "dev", "author": "鈴木", "text": "ToDo画面、期限を過ぎたタスクの表示が他と変わらないのが気になります。強調表示できないですかね?", "offsetMinutes": -280 },
+  { "room": "dev", "author": "田中", "text": "良さそうですね、Issueにしておきます", "offsetMinutes": -275 },
+  { "room": "dev", "author": "田中", "text": "起票しました。次のスプリントで対応する方向で", "offsetMinutes": -260 },
+  { "room": "dev", "author": "鈴木", "text": "チャット、複数チャンネルに対応したいという話が出てます。設計相談したいです", "offsetMinutes": -120 },
+  { "room": "dev", "author": "佐藤", "text": "良いと思います。まずはgeneral・開発・案件用の3つくらいから始めましょう", "offsetMinutes": -115 },
+
+  { "room": "project-alpha", "author": "田中", "text": "アルファ社さん向け、週次レポートの下書きできました。確認お願いします", "offsetMinutes": -250 },
+  { "room": "project-alpha", "author": "佐藤", "text": "確認しました、数値部分だけ直せばOKです", "offsetMinutes": -230 },
+  { "room": "project-alpha", "author": "田中", "text": "修正して提出しておきました", "offsetMinutes": -170 },
+  { "room": "project-alpha", "author": "鈴木", "text": "アルファ社さんから会議室の件で返信来てます。来週火曜10時でどうかと", "offsetMinutes": -30 },
+  { "room": "project-alpha", "author": "佐藤", "text": "問題なさそうです、こちらで会議室を予約しておきます", "offsetMinutes": -25 }
+]

@@ -9,7 +9,8 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "lint": "eslint .",
-    "generate:openapi": "nuxt build && node scripts/generate-openapi.mjs"
+    "generate:openapi": "nuxt build && node scripts/generate-openapi.mjs",
+    "demo:reset": "node scripts/reset-demo-data.mjs"
   },
   "dependencies": {
     "nuxt": "^4.5.2",
