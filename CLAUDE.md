@@ -14,6 +14,7 @@ npm run build    # 本番ビルド、出力先は front/.output/
 npm run preview  # 本番ビルドのプレビュー
 npm run lint      # ESLintによる静的解析
 npm run generate:openapi  # docs/api/openapi.json を再生成
+npm run demo:reset        # front/.data配下を削除し、次回アクセス時にシードデータへ戻す（デモの再実行前などに使用）
 ```
 
 ```
@@ -21,6 +22,8 @@ cd mcp-server
 npm install
 npm start        # MCPサーバーをstdioで起動（先にfront/の開発/本番サーバーを起動しておくこと）
 ```
+
+ClaudeへのMCPサーバー登録手順（Claude Code CLI / Claude Desktop）やデモの進め方は`mcp-server/README.md`を参照。
 
 `npm run lint`（front/）はPull Request作成時にGitHub Actions（`.github/workflows/lint.yml`）でも自動実行されます。テストランナーは整備されていないため、`npm test` が存在する前提で作業しないこと。
 
