@@ -1,14 +1,26 @@
 <script setup>
-const { data: messages, refresh } = await useFetch('/api/chat/messages', { default: () => [] })
+const { data: rooms } = await useFetch('/api/chat/rooms', { default: () => [] })
+const selectedRoomId = ref(rooms.value[0]?.id ?? 'general')
+const selectedRoom = computed(() => rooms.value.find((r) => r.id === selectedRoomId.value))
+
+const { data: messages, refresh } = await useFetch('/api/chat/messages', {
+  query: { room: selectedRoomId },
+  default: () => [],
+})
+
 const author = ref('あなた')
 const text = ref('')
+
+function selectRoom(roomId) {
+  selectedRoomId.value = roomId
+}
 
 async function sendMessage() {
   const trimmed = text.value.trim()
   if (!trimmed) return
   await $fetch('/api/chat/messages', {
     method: 'POST',
-    body: { author: author.value.trim(), text: trimmed },
+    body: { room: selectedRoomId.value, author: author.value.trim(), text: trimmed },
   })
   text.value = ''
   await refresh()
@@ -22,29 +34,59 @@ async function sendMessage() {
       <p class="app-sub">MCPサーバー経由でも読み書きできる簡易チャットです。</p>
     </header>
 
-    <ul class="chat-list">
-      <li v-for="message in messages" :key="message.id" class="chat-message">
-        <div class="chat-message-meta">
-          <span class="chat-message-author">{{ message.author }}</span>
-          <span class="chat-message-time">{{ formatTime(message.createdAt) }}</span>
-        </div>
-        <p class="chat-message-text">{{ message.text }}</p>
-      </li>
-    </ul>
+    <div class="chat-layout">
+      <aside class="chat-rooms">
+        <h2 class="chat-rooms-title">チャンネル</h2>
+        <ul class="chat-room-list">
+          <li v-for="room in rooms" :key="room.id">
+            <button
+              type="button"
+              :class="['chat-room-button', { active: room.id === selectedRoomId }]"
+              @click="selectRoom(room.id)"
+            >
+              <span class="chat-room-icon">{{ room.icon }}</span>
+              <span class="chat-room-name">{{ room.name }}</span>
+            </button>
+          </li>
+        </ul>
+      </aside>
 
-    <p v-if="messages.length === 0" class="empty-state visible">
-      まだメッセージはありません。
-    </p>
+      <div class="chat-main">
+        <header v-if="selectedRoom" class="chat-room-header">
+          <span class="chat-room-header-icon">{{ selectedRoom.icon }}</span>
+          <h2 class="chat-room-header-name">{{ selectedRoom.name }}</h2>
+        </header>
 
-    <form class="chat-form" @submit.prevent="sendMessage">
-      <input v-model="author" type="text" class="chat-author-input" aria-label="名前" >
-      <input
-        v-model="text"
-        type="text"
-        placeholder="メッセージを入力して Enter"
-        autocomplete="off"
-      >
-      <button type="submit">送信</button>
-    </form>
+        <ul class="chat-list">
+          <li v-for="message in messages" :key="message.id" class="chat-message">
+            <span class="chat-avatar" :style="{ background: getAvatarColor(message.author) }">
+              {{ getAvatarInitial(message.author) }}
+            </span>
+            <div class="chat-message-body">
+              <div class="chat-message-meta">
+                <span class="chat-message-author">{{ message.author }}</span>
+                <span class="chat-message-time">{{ formatTime(message.createdAt) }}</span>
+              </div>
+              <p class="chat-message-text">{{ message.text }}</p>
+            </div>
+          </li>
+        </ul>
+
+        <p v-if="messages.length === 0" class="empty-state visible">
+          まだメッセージはありません。
+        </p>
+
+        <form class="chat-form" @submit.prevent="sendMessage">
+          <input v-model="author" type="text" class="chat-author-input" aria-label="名前" >
+          <input
+            v-model="text"
+            type="text"
+            placeholder="メッセージを入力して Enter"
+            autocomplete="off"
+          >
+          <button type="submit">送信</button>
+        </form>
+      </div>
+    </div>
   </div>
 </template>

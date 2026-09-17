@@ -31,5 +31,6 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'text is required' })
   }
   const author = typeof body?.author === 'string' && body.author.trim() ? body.author.trim() : 'あなた'
-  return await addMessage({ author, text })
+  const room = typeof body?.room === 'string' && body.room.trim() ? body.room.trim() : ''
+  return await addMessage({ room, author, text })
 })
