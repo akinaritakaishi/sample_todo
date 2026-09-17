@@ -40,8 +40,10 @@ async function persist(messages) {
 }
 
 export async function getMessages(room) {
-  const messages = await loadMessages()
   const targetRoom = room || DEFAULT_ROOM
+  if (!ROOM_IDS.has(targetRoom)) return null
+
+  const messages = await loadMessages()
   return messages.filter((message) => (message.room || DEFAULT_ROOM) === targetRoom)
 }
 

@@ -41,6 +41,16 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "roomが未知のチャンネルID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         },
         "summary": "チャットメッセージ一覧を取得する",

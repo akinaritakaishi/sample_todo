@@ -23,6 +23,10 @@ defineRouteMeta({
           },
         },
       },
+      400: {
+        description: 'roomが未知のチャンネルID',
+        content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } },
+      },
     },
   },
 })
@@ -30,5 +34,9 @@ defineRouteMeta({
 export default defineEventHandler(async (event) => {
   const query = getQuery(event)
   const room = typeof query.room === 'string' ? query.room.trim() : ''
-  return await getMessages(room)
+  const messages = await getMessages(room)
+  if (!messages) {
+    throw createError({ statusCode: 400, statusMessage: 'unknown room' })
+  }
+  return messages
 })
