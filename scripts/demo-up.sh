@@ -5,6 +5,7 @@
 #
 # 使い方: ./scripts/demo-up.sh [PORT]
 #   PORT: front/を起動するポート。省略時は3000。
+#   DEMO_READY_TIMEOUT_SECONDS環境変数で起動確認の待機秒数を変更できる（省略時60秒）。
 #
 # 終了後は ./scripts/demo-down.sh [PORT] でサーバーを停止できる。
 set -euo pipefail
@@ -37,9 +38,11 @@ echo "==> front/の開発サーバーを起動します (port=$PORT)"
 (cd "$FRONT_DIR" && nohup npm run dev -- --port "$PORT" > "$LOG_FILE" 2>&1 < /dev/null &)
 echo "$PORT" > "$PORT_FILE"
 
+READY_TIMEOUT_SECONDS="${DEMO_READY_TIMEOUT_SECONDS:-60}"
+
 echo -n "起動待機中"
 ready=0
-for _ in $(seq 1 30); do
+for _ in $(seq 1 "$READY_TIMEOUT_SECONDS"); do
   if curl -sf "http://localhost:$PORT/api/tasks" > /dev/null 2>&1; then
     ready=1
     break
@@ -50,7 +53,9 @@ done
 echo ""
 
 if [ "$ready" -ne 1 ]; then
-  echo "front/サーバーの起動確認に失敗しました。$LOG_FILE を確認してください。"
+  echo "${READY_TIMEOUT_SECONDS}秒以内にfront/サーバーの起動を確認できませんでした。"
+  echo "サーバープロセス自体は起動したまま残っている可能性があります。$LOG_FILE を確認し、"
+  echo "起動が完了していそうならDEMO_READY_TIMEOUT_SECONDS環境変数で待機時間を延ばして再実行してください。"
   exit 1
 fi
 echo "front/サーバーが起動しました (http://localhost:$PORT)"

@@ -39,7 +39,11 @@ server.registerTool(
     description:
       'sample_todoアプリのチャットツール(front/の/chatページ)の指定チャンネルに投稿された全メッセージを投稿順で取得する。',
     inputSchema: {
-      room: z.string().min(1).optional().describe('取得するチャンネルのID。省略時は"general"'),
+      room: z
+        .string()
+        .min(1)
+        .optional()
+        .describe('取得するチャンネルのID（general/dev/project-alpha）。省略時は"general"'),
     },
   },
   async ({ room }) => {
@@ -54,7 +58,13 @@ server.registerTool(
     title: 'チャットにメッセージを送信',
     description: 'sample_todoアプリのチャットツールの指定チャンネルへメッセージを1件投稿する。',
     inputSchema: {
-      room: z.string().min(1).optional().describe('投稿先チャンネルのID。省略時は"general"'),
+      room: z
+        .string()
+        .min(1)
+        .optional()
+        .describe(
+          '投稿先チャンネルのID（general/dev/project-alphaのいずれか。それ以外はエラーになる）。省略時は"general"',
+        ),
       author: z.string().min(1).describe('投稿者として表示する名前'),
       text: z.string().min(1).describe('メッセージ本文'),
     },

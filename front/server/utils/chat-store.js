@@ -1,9 +1,11 @@
 import { randomUUID } from 'node:crypto'
 import { readJsonFile, writeJsonFile } from './json-store'
 import seedMessagesData from '../data/seed-chat-messages.json'
+import rooms from '../data/chat-rooms.json'
 
 const FILE_NAME = 'chat-messages.json'
 const DEFAULT_ROOM = 'general'
+const ROOM_IDS = new Set(rooms.map((r) => r.id))
 
 function toCreatedAt(offsetMinutes) {
   const d = new Date()
@@ -44,10 +46,13 @@ export async function getMessages(room) {
 }
 
 export async function addMessage({ room, author, text }) {
+  const targetRoom = room || DEFAULT_ROOM
+  if (!ROOM_IDS.has(targetRoom)) return null
+
   const messages = await loadMessages()
   const message = {
     id: randomUUID(),
-    room: room || DEFAULT_ROOM,
+    room: targetRoom,
     author,
     text,
     createdAt: new Date().toISOString(),

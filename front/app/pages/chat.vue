@@ -1,12 +1,10 @@
 <script setup>
-const { data: rooms } = await useFetch('/api/chat/rooms', { default: () => [] })
-const selectedRoomId = ref(rooms.value[0]?.id ?? 'general')
+const selectedRoomId = ref('general')
+const [{ data: rooms }, { data: messages, refresh }] = await Promise.all([
+  useFetch('/api/chat/rooms', { default: () => [] }),
+  useFetch('/api/chat/messages', { query: { room: selectedRoomId }, default: () => [] }),
+])
 const selectedRoom = computed(() => rooms.value.find((r) => r.id === selectedRoomId.value))
-
-const { data: messages, refresh } = await useFetch('/api/chat/messages', {
-  query: { room: selectedRoomId },
-  default: () => [],
-})
 
 const author = ref('あなた')
 const text = ref('')

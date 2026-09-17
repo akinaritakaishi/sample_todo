@@ -63,7 +63,7 @@
             }
           },
           "400": {
-            "description": "textが空、または未指定",
+            "description": "textが空・未指定、またはroomが未知のチャンネルID",
             "content": {
               "application/json": {
                 "schema": {
