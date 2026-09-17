@@ -43,7 +43,9 @@ server.registerTool(
         .string()
         .min(1)
         .optional()
-        .describe('取得するチャンネルのID（general/dev/project-alpha）。省略時は"general"'),
+        .describe(
+          '取得するチャンネルのID。有効なIDは server/data/chat-rooms.json（GET /api/chat/rooms）で定義された固定セット。省略時は"general"',
+        ),
     },
   },
   async ({ room }) => {
@@ -63,7 +65,7 @@ server.registerTool(
         .min(1)
         .optional()
         .describe(
-          '投稿先チャンネルのID（general/dev/project-alphaのいずれか。それ以外はエラーになる）。省略時は"general"',
+          '投稿先チャンネルのID。有効なIDは server/data/chat-rooms.json（GET /api/chat/rooms）で定義された固定セットのみで、それ以外はエラーになる。省略時は"general"',
         ),
       author: z.string().min(1).describe('投稿者として表示する名前'),
       text: z.string().min(1).describe('メッセージ本文'),
