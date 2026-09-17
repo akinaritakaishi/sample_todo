@@ -23,7 +23,7 @@ npm install
 npm start        # MCPサーバーをstdioで起動（先にfront/の開発/本番サーバーを起動しておくこと）
 ```
 
-ClaudeへのMCPサーバー登録手順（Claude Code CLI / Claude Desktop）やデモの進め方は`mcp-server/README.md`を参照。
+ClaudeへのMCPサーバー登録手順（Claude Code CLI / Claude Desktop）やデモの進め方は`mcp-server/README.md`を参照。`./scripts/demo-up.sh [PORT]`（リポジトリルートで実行）で、依存インストール・データのシードへのリセット・front/起動・MCPサーバー登録までを一括実行できる。停止は`./scripts/demo-down.sh [PORT]`。
 
 `npm run lint`（front/）はPull Request作成時にGitHub Actions（`.github/workflows/lint.yml`）でも自動実行されます。テストランナーは整備されていないため、`npm test` が存在する前提で作業しないこと。
 

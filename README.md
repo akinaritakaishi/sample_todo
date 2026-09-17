@@ -2,6 +2,16 @@
 
 Nuxt (Vue 3) 製のシンプルなタスク管理アプリ＋簡易チャットツール（デモ用リポジトリ）。API通信・永続化はNuxtサーバー側で行い、チャットはMCPサーバー経由でも読み書きできます。
 
+## デモをすぐ動かす
+
+```
+./scripts/demo-up.sh [PORT]   # front/・mcp-server/の依存インストール、データをシードへリセット、
+                               # front/起動、MCPサーバーのClaude Code CLIへの登録までを一括実行（既定ポート3000）
+./scripts/demo-down.sh [PORT] # 起動したfront/サーバーを停止
+```
+
+詳細は[`mcp-server/README.md`](./mcp-server/README.md)を参照してください。
+
 ## front
 
 ```

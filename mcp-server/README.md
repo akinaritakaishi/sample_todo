@@ -2,6 +2,17 @@
 
 `front/`のチャットAPI（`/api/chat/messages`・`/api/chat/rooms`）を読み書きするMCPサーバー（stdio）。`front/`とは独立したNode.jsプロジェクトで、`list_chat_messages`（読み取り）・`send_chat_message`（書き込み）の2ツールを提供する。データストア（JSONファイル）には直接アクセスせず、必ず`front/`のHTTP API経由でやり取りする。詳細は`docs/Architecture.md`の「データフロー（チャット・MCP連携）」を参照。
 
+## 一番速い始め方
+
+以下の手順（front/・mcp-server/のインストール、`front/`のサーバー起動、Claude Code CLIへの登録）をまとめて行うスクリプトがリポジトリルートにある。
+
+```
+./scripts/demo-up.sh [PORT]   # 既定ポート3000
+./scripts/demo-down.sh [PORT] # 停止
+```
+
+`claude`コマンドが使える環境であれば`sample-todo-chat`という名前でMCPサーバーが自動登録される（既に登録済みならスキップ）。Claude Desktopや`claude`コマンドが無い環境では、登録部分だけ以下の手順を手動で行う。
+
 ## 前提
 
 このMCPサーバーは`front/`のHTTP APIを叩くだけなので、**先に`front/`のサーバーを起動しておく必要がある**。
