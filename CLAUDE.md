@@ -29,7 +29,7 @@ ClaudeへのMCPサーバー登録手順（Claude Code CLI / Claude Desktop）や
 
 ## アーキテクチャ
 
-詳細な説明は `docs/Architecture.md` を参照。画面ごとの仕様は `docs/screens/`、APIの仕様は `docs/api/openapi.json`（`front/server/api/**/*.js`の`defineRouteMeta`から`npm run generate:openapi`で自動生成、詳細は`docs/api/README.md`）を参照。要点のみここに記す。
+詳細な説明は `docs/Architecture.md` を参照。画面ごとの仕様は `docs/screens/`、UIの配色・強調表示のルールは `docs/design-guidelines.md`、APIの仕様は `docs/api/openapi.json`（`front/server/api/**/*.js`の`defineRouteMeta`から`npm run generate:openapi`で自動生成、詳細は`docs/api/README.md`）を参照。要点のみここに記す。
 
 `front/` は Nuxt 4 (Vue 3) 製のアプリで、ToDo画面（`/`）とチャットツール画面（`/chat`）の2ページを持つ。ロジックはクライアント側の `app/` とサーバー側の `server/` に分かれる。
 
