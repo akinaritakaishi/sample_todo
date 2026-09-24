@@ -7,7 +7,12 @@ const FILE_NAME = 'tasks.json'
 function toDateString(offsetDays) {
   const d = new Date()
   d.setDate(d.getDate() + (Number.isFinite(offsetDays) ? offsetDays : 0))
-  return d.toISOString().slice(0, 10)
+  // Use local date parts: toISOString() is UTC and shifts the date by a day
+  // when seeding before 09:00 in JST.
+  const y = d.getFullYear()
+  const m = String(d.getMonth() + 1).padStart(2, '0')
+  const day = String(d.getDate()).padStart(2, '0')
+  return `${y}-${m}-${day}`
 }
 
 function createSeedTasks() {

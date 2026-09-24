@@ -12,6 +12,7 @@
   { "room": "dev", "author": "鈴木", "text": "あと、期限を過ぎちゃったタスクも普通の表示のままなので、そっちも目立つと嬉しいです", "offsetMinutes": -88 },
   { "room": "dev", "author": "佐藤", "text": "了解です!じゃあ「期限切れ/今日/明日/それ以外」で見た目変える方向で対応してみますね。デザインのルールとかあれば教えてください🙌", "offsetMinutes": -77 },
   { "room": "dev", "author": "田中", "text": "たしかドキュメントにデザインのルールまとめてあった気がします!そっちも見ておいてもらえると助かります", "offsetMinutes": -74 },
+  { "room": "dev", "author": "鈴木", "text": "個人的には、今日のタスクは行ごと真っ赤に塗っちゃうくらいでもいいと思ってます笑 そのほうが絶対気づくので!", "offsetMinutes": -72 },
 
   { "room": "project-alpha", "author": "田中", "text": "アルファ社さん向け、週次レポートの下書きできました。確認お願いします", "offsetMinutes": -250 },
   { "room": "project-alpha", "author": "佐藤", "text": "確認しました、数値部分だけ直せばOKです", "offsetMinutes": -230 },
