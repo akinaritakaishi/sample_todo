@@ -14,4 +14,5 @@
 - [0003: UIに影響する変更ではPR本文へのスクリーンショット埋め込みを必須にする](./0003-require-pr-screenshots-for-ui-changes.md)（廃止。画像の保存場所・参照先はADR 0006で変更）
 - [0004: 画面仕様書(docs/screens)とAPI仕様(OpenAPI)を整備し、変更時の更新を必須にする](./0004-add-screen-specs-and-openapi-docs.md)（OpenAPIの作成方式はADR 0005で変更）
 - [0005: OpenAPIドキュメントをNitroのdefineRouteMetaから自動生成する](./0005-generate-openapi-from-nitro-route-meta.md)
-- [0006: PR本文のスクリーンショットはdocs/screens/を参照する方式にする（PRごとのアーカイブは廃止）](./0006-reference-docs-screens-in-pr-body-instead-of-archiving.md)
+- [0006: PR本文のスクリーンショットはdocs/screens/を参照する方式にする（PRごとのアーカイブは廃止）](./0006-reference-docs-screens-in-pr-body-instead-of-archiving.md)（PR本文への埋め込み方法はADR 0007で変更）
+- [0007: PR本文のスクリーンショットはmainブランチを指す`<img>`タグで埋め込む](./0007-embed-pr-screenshots-with-img-tag-pointing-at-main.md)

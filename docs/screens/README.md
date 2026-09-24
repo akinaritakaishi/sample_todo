@@ -10,5 +10,5 @@
 ## 運用ルール
 
 - 画面のUI・挙動に影響する変更（表示項目の追加・削除、操作フローの変更など）を行った場合は、対応する仕様書と、埋め込んでいるスクリーンショット（`<画面名>.png`）を同じPRで更新する。撮影方法は`.claude/skills/verify-front/`を参照。
-- UIに影響する変更を含むPRでは、更新した`docs/screens/<画面名>.png`をPR本文にもMarkdown画像として埋め込む（`.claude/skills/commit-and-pr/SKILL.md`5.1節）。
+- UIに影響する変更を含むPRでは、更新した`docs/screens/<画面名>.png`をPR本文にも`<img>`タグ（`main`ブランチを指す絶対URL）で埋め込む（`.claude/skills/commit-and-pr/SKILL.md`5.1節、ADR 0006・0007）。
 - 新しい画面を追加した場合は、このファイルの一覧にも追記する。

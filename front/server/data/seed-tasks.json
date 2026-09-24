@@ -1,4 +1,5 @@
 [
+  { "title": "取引先に請求書を送る", "offsetDays": -2, "done": true },
   { "title": "経費精算を申請する", "offsetDays": -1, "done": false },
   { "title": "週次レポートを提出する", "offsetDays": 0, "done": false },
   { "title": "会議室を予約する", "offsetDays": 1, "done": false },
