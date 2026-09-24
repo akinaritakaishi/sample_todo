@@ -1,6 +1,6 @@
 ---
 name: pr-review
-description: 既存のPull Requestの差分をAIでレビューし、指摘をmust/imo/nitsでラベル付けしてPRにインラインコメントし、must指摘がなければApprove・あればRequest changesとしてレビューを提出するスキル。コードの修正・コミット・pushは一切行わない（修正は`fix-and-verify`スキルの担当）。「PRをレビューして」「このPRを見てapproveして」「セルフレビューして」「レビューだけお願い」など、PRのレビュー・承認判断だけを依頼された際に使うこと。レビュー後の修正まで一括で頼まれた場合は`pr-review-loop`スキルを使う。
+description: 既存のPull Requestの差分をAIでレビューし、指摘をmust/imo/nitsでラベル付けしてPRにインラインコメントし、すべての指摘に対応可否の返信が付き新たな指摘もないときだけApproveする（mustが残ればRequest changes、imo/nitsのみなら未承認のコメント）スキル。コードの修正・コミット・pushは一切行わない（修正は`fix-and-verify`スキルの担当）。「PRをレビューして」「このPRを見てapproveして」「セルフレビューして」「レビューだけお願い」など、PRのレビュー・承認判断だけを依頼された際に使うこと。レビュー後の修正まで一括で頼まれた場合は`pr-review-loop`スキルを使う。
 ---
 
 # PRレビュー・承認
@@ -41,13 +41,16 @@ GitHub MCPのレビューAPIで、指摘と判断を**1つのレビュー**と�
 2. 指摘ごとに`add_comment_to_pending_review`で該当ファイル・行へインラインコメント。本文は`**must:** <指摘内容>`のようにラベルを太字で先頭に置き、修正担当（`fix-and-verify`）が読んで着手できるよう「何が問題か・どう直すとよいか」まで書く
 3. `pull_request_review_write`（`submit_pending`）で、次の判断に従って提出
 
+Approveするのは **「今回の新規指摘が0件」かつ「過去のレビューで付けた指摘（must/imo/nitsすべて）の各スレッドに、対応内容または対応しない理由の返信が付いている」** ときだけです。imo/nitsであっても、対応可否が返信で埋まっていない限りApproveしません。過去の指摘スレッドは`mcp__github__pull_request_read`でレビューコメントを取得して確認します。
+
 | 状況 | event | レビュー本文 |
 | --- | --- | --- |
-| 指摘0件 | `APPROVE` | 「セルフレビューを実施し、指摘はありませんでした。」 |
-| must 0件（imo/nitsのみ） | `APPROVE` | 「must指摘はないためApproveします。imo/nitsは任意対応です。」＋件数 |
-| must 1件以上 | `REQUEST_CHANGES` | 「must指摘があるため修正をお願いします。」＋must/imo/nits別の件数 |
+| 新規指摘0件、かつ過去の指摘すべてに返信あり（または過去の指摘なし） | `APPROVE` | 「セルフレビューを実施し、新たな指摘はありません。過去の指摘はすべて対応可否が回答済みです。」 |
+| 新規指摘0件だが、返信のない過去の指摘が残っている | `COMMENT` | 「未回答の指摘があるためApproveを保留します。」＋未回答スレッドの一覧 |
+| 新規指摘がimo/nitsのみ | `COMMENT` | 「imo/nitsについて対応可否の回答をお願いします。」＋件数 |
+| 新規指摘にmustを含む | `REQUEST_CHANGES` | 「must指摘があるため修正をお願いします。」＋must/imo/nits別の件数 |
 
-PR作成者と同じアカウントで実行しているなどの理由でGitHubが`APPROVE`/`REQUEST_CHANGES`を拒否した場合は、`COMMENT`で提出し直し、本文冒頭に「判定: Approve相当」または「判定: Request changes相当」と明記する。
+PR作成者と同じアカウントで実行しているなどの理由でGitHubが`APPROVE`/`REQUEST_CHANGES`を拒否した場合は、`COMMENT`で提出し直し、本文冒頭に「判定: Approve相当」「判定: Request changes相当」のように明記する。
 
 ### 5. 知見を蓄積する
 
@@ -57,7 +60,7 @@ PR作成者と同じアカウントで実行しているなどの理由でGitHub
 
 呼び出し元（ユーザー、または`pr-review-loop`）に、次を簡潔に返す。
 
-- 判定（Approve / Request changes、`COMMENT`で代替した場合はその旨）
+- 判定（Approve / Comment / Request changes、`COMMENT`で代替した場合はその旨）
 - must/imo/nits別の件数と各指摘の要約
 - 提出したレビューのURL
 
