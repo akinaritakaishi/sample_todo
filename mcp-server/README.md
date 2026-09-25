@@ -19,7 +19,7 @@
 
 ```
 cd front
-npm install
+npm ci
 npm run dev      # または npm run build && npm run preview
 ```
 
@@ -29,7 +29,7 @@ npm run dev      # または npm run build && npm run preview
 
 ```
 cd mcp-server
-npm install
+npm ci
 ```
 
 動作確認だけしたい場合は`npm start`でstdioサーバーが起動する（MCPクライアントから接続されるまでは何も出力せず待機する）。

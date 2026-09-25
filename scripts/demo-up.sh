@@ -20,10 +20,10 @@ LOG_FILE="$DATA_DIR/demo-front.log"
 PORT_FILE="$DATA_DIR/demo-front.port"
 
 echo "==> front/の依存関係を確認します"
-[ -d "$FRONT_DIR/node_modules" ] || (cd "$FRONT_DIR" && npm install)
+[ -d "$FRONT_DIR/node_modules" ] || (cd "$FRONT_DIR" && npm ci)
 
 echo "==> mcp-server/の依存関係を確認します"
-[ -d "$MCP_DIR/node_modules" ] || (cd "$MCP_DIR" && npm install)
+[ -d "$MCP_DIR/node_modules" ] || (cd "$MCP_DIR" && npm ci)
 
 mkdir -p "$DATA_DIR"
 

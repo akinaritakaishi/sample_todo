@@ -16,7 +16,7 @@ Nuxt (Vue 3) 製のシンプルなタスク管理アプリ＋簡易チャット�
 
 ```
 cd front
-npm install
+npm ci
 npm run dev      # 開発サーバー起動 (Nuxt)
 npm run build    # 本番ビルド（front/.output/ に出力）
 npm run preview  # 本番ビルドのプレビュー
@@ -40,7 +40,7 @@ npm run generate:openapi  # docs/api/openapi.json を再生成
 
 ```
 cd mcp-server
-npm install
+npm ci
 npm start
 ```
 
