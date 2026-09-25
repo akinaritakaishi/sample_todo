@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "sample-todo-chat": {
+      "command": "node",
+      "args": ["mcp-server/index.js"],
+      "env": {
+        "CHAT_API_BASE_URL": "http://localhost:3000"
+      }
+    }
+  }
+}
