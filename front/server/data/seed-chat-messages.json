@@ -18,5 +18,7 @@
   { "room": "project-alpha", "author": "佐藤", "text": "確認しました、数値部分だけ直せばOKです", "offsetMinutes": -230 },
   { "room": "project-alpha", "author": "田中", "text": "修正して提出しておきました", "offsetMinutes": -170 },
   { "room": "project-alpha", "author": "鈴木", "text": "アルファ社さんから会議室の件で返信来てます。来週火曜10時でどうかと", "offsetMinutes": -30 },
-  { "room": "project-alpha", "author": "佐藤", "text": "問題なさそうです、こちらで会議室を予約しておきます", "offsetMinutes": -25 }
+  { "room": "project-alpha", "author": "佐藤", "text": "問題なさそうです、こちらで会議室を予約しておきます", "offsetMinutes": -25 },
+
+  { "room": "expense", "author": "経理 高橋", "text": "10月申請分の経費精算は10/5締めです。申請書と領収書は所定のフォルダへ格納してください。不備があればこのチャンネルでご連絡します", "offsetMinutes": -240 }
 ]

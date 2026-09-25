@@ -78,13 +78,14 @@ claude mcp add sample-todo-chat --env CHAT_API_BASE_URL=http://localhost:3001 --
 
 ## デモの進め方
 
-チャンネルは`general`・`dev`（開発）・`project-alpha`（案件-アルファ社）の3つが固定で用意されている（`front/server/data/chat-rooms.json`）。`room`引数を省略すると`general`が対象になる。
+チャンネルは`general`・`dev`（開発）・`project-alpha`（案件-アルファ社）・`expense`（経費精算）の4つが固定で用意されている（`front/server/data/chat-rooms.json`）。`room`引数を省略すると`general`が対象になる。
 
 デモ用のプロンプト例:
 
 - 「`dev`チャンネルの直近のやり取りを見せて」→ `list_chat_messages`が`room: "dev"`で呼ばれる
 - 「`general`チャンネルに『定例10時からです』と投稿して」→ `send_chat_message`が呼ばれ、`/chat`画面にも即座に反映される
 - 「`dev`チャンネルのToDo画面への要望を読んで、`docs/design-guidelines.md`に沿って対応して」→ 勉強会のメインシナリオ（期限切れ・今日・明日のタスクの強調表示）。シードの`dev`チャンネルに要望のやり取りが入っており、タスクのシードにも未完了の期限切れ・今日・明日・それ以外が1件ずつと、完了済みの期限切れが1件入っている。進行の全体は`docs/demo/README.md`（デモ台本）を参照
+- 「10月申請分の経費精算をチェックして」→ デモ2（経費精算チェック）。`expense-check`スキルが`send_chat_message`を`room: "expense"`で呼び、不備のある申請者へ通知する。進行は`docs/demo/expense/README.md`を参照
 - 投稿後にブラウザの`/chat`画面を開いて、MCP経由の投稿がSlack風のUIにそのまま表示されることを見せると連携が伝わりやすい
 
 ### デモ前にデータを初期状態に戻す

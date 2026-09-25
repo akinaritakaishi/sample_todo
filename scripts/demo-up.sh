@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # デモの一括セットアップ。front/・mcp-server/の依存インストール、
-# チャット/タスクデータをシードへリセット、front/の開発サーバー起動、
+# チャット/タスクデータをシードへリセット、デモ2の経費台帳
+# （docs/demo/expense/経理用/）をgit restoreで初期状態へ戻し、front/の開発サーバー起動、
 # Claude Code CLIへのMCPサーバー登録までを1コマンドで行う。
 #
 # 使い方: ./scripts/demo-up.sh [PORT]
@@ -28,6 +29,9 @@ mkdir -p "$DATA_DIR"
 
 echo "==> デモ用データをシードにリセットします"
 (cd "$FRONT_DIR" && npm run demo:reset)
+
+echo "==> デモ2の経費台帳を初期状態に戻します"
+git -C "$ROOT_DIR" restore -- docs/demo/expense/経理用/
 
 if lsof -ti:"$PORT" > /dev/null 2>&1; then
   echo "ポート$PORTは既に使用中です。./scripts/demo-down.sh $PORT で停止してから実行してください。"

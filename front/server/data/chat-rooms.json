@@ -1,5 +1,6 @@
 [
   { "id": "general", "name": "general", "icon": "💬" },
   { "id": "dev", "name": "開発", "icon": "🛠️" },
-  { "id": "project-alpha", "name": "案件-アルファ社", "icon": "📁" }
+  { "id": "project-alpha", "name": "案件-アルファ社", "icon": "📁" },
+  { "id": "expense", "name": "経費精算", "icon": "🧾" }
 ]

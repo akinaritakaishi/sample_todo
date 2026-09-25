@@ -4,6 +4,8 @@
 
 > 登場人物・発言はすべて架空（`slack-thread.md`参照）。
 
+> 非エンジニア向けのデモ2（経費精算チェック）の台本は[`expense/README.md`](expense/README.md)を参照。
+
 ## 事前準備
 
 1. リポジトリルートで`./scripts/demo-up.sh`を実行する（依存インストール、データのシードへのリセット、`front/`起動、MCPサーバー`sample-todo-chat`の登録まで一括）。
