@@ -65,7 +65,7 @@ front/
 - `server/utils/chat-store.js` — チャットメッセージのデータ層。`.data/chat-messages.json`が無ければ`server/data/seed-chat-messages.json`からシードデータを生成する。メッセージの型は`{ id, room, author, text, createdAt }`。`getMessages(room)`は`room`（省略時は`"general"`）に一致するメッセージのみを返す。
 - `server/data/seed-tasks.json` — タスクの初期データ（シードデータ）の定義。各要素は`{ title, offsetDays, done }`。ここを編集することでコードを変更せずに初期表示するタスクを変更できる。
 - `server/data/chat-rooms.json` — チャンネル一覧（固定）の定義。各要素は`{ id, name, icon }`で、`app/pages/chat.vue`のサイドバーとヘッダーに表示される。ユーザーによる作成・編集はできない。
-- `server/data/seed-chat-messages.json` — チャットの初期データ（シードデータ）の定義。各要素は`{ room, author, text, offsetMinutes }`。デモ向けに`general`・`dev`・`project-alpha`の3チャンネル分の会話が入っている。
+- `server/data/seed-chat-messages.json` — チャットの初期データ（シードデータ）の定義。各要素は`{ room, author, text, offsetMinutes }`。デモ向けに`general`・`dev`・`project-alpha`・`expense`の4チャンネル分の会話が入っている。
 
 永続化はいずれもNuxtサーバープロセス内のJSONファイル（`front/.data/`配下）で行われ、ブラウザの`localStorage`は使わない。そのため複数タブ・複数ブラウザから同じデータを参照できる。
 
