@@ -8,7 +8,7 @@
 
 ```
 cd front
-npm install
+npm ci
 npm run dev      # 開発サーバー起動 (Nuxt)
 npm run build    # 本番ビルド、出力先は front/.output/
 npm run preview  # 本番ビルドのプレビュー
@@ -19,7 +19,7 @@ npm run demo:reset        # front/.data配下を削除し、次回アクセス�
 
 ```
 cd mcp-server
-npm install
+npm ci
 npm start        # MCPサーバーをstdioで起動（先にfront/の開発/本番サーバーを起動しておくこと）
 ```
 
