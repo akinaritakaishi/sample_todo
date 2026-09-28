@@ -18,6 +18,9 @@ async function main() {
   const launchOptions = {};
   if (process.env.CHROMIUM_EXECUTABLE_PATH) {
     launchOptions.executablePath = process.env.CHROMIUM_EXECUTABLE_PATH;
+  } else if (process.env.PLAYWRIGHT_CHANNEL) {
+    // Windowsなど/opt/pw-browsersが無い環境では、インストール済みのChrome/Edgeを使う。
+    launchOptions.channel = process.env.PLAYWRIGHT_CHANNEL;
   }
   const browser = await chromium.launch(launchOptions);
   const page = await browser.newPage();
@@ -41,6 +44,11 @@ async function main() {
     // 待つ短い猶予を置く。
     await page.goto(url, { waitUntil: 'load', timeout: 15000 });
     await page.waitForTimeout(500);
+    // devサーバーでは画面下部にNuxt DevToolsのバッジが重なる。スクリーンショットは
+    // docs/screens/の仕様書にもそのまま使うため、撮影前に非表示にしておく。
+    await page.addStyleTag({
+      content: '#nuxt-devtools-container, [id^="nuxt-devtools"] { display: none !important; }',
+    });
     await page.screenshot({ path: `${outDir}/screenshot.png`, fullPage: true });
   } catch (err) {
     failed = err.message;
