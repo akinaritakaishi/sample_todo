@@ -2,6 +2,7 @@
 const { data: tasks, refresh } = await useFetch('/api/tasks', { default: () => [] })
 const title = ref('')
 const due = ref('')
+const remainingCount = computed(() => tasks.value.filter((t) => !t.done).length)
 
 async function handleSubmit() {
   const trimmed = title.value.trim()
@@ -49,7 +50,7 @@ async function clearDoneTasks() {
     </form>
 
     <div class="list-meta">
-      <span>{{ tasks.length }}件のタスク</span>
+      <span>未完了 {{ remainingCount }}件 / 全{{ tasks.length }}件</span>
       <button type="button" class="text-button" @click="clearDoneTasks">
         完了済みを削除
       </button>
