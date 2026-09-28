@@ -29,10 +29,29 @@ fi
 
 mkdir -p "$OUT_DIR"
 
+# Windows(Git Bash)ではsetsid・/opt/pw-browsersが無いため、起動・停止とブラウザの解決を切り替える。
+IS_WINDOWS=0
+case "$(uname -s)" in
+  MINGW*|MSYS*|CYGWIN*) IS_WINDOWS=1 ;;
+esac
+
 DEV_LOG="$OUT_DIR/dev-server.log"
 DEV_PID=""
+DEV_WINPID=""
 
 cleanup() {
+  if [ "$IS_WINDOWS" -eq 1 ]; then
+    # Windowsではプロセスグループへのシグナル送信が効かないため、taskkill /T で
+    # 起動したbashのWindowsプロセスから子孫（npm→nuxi→Nitro）までツリーごと停止する。
+    # 念のため、それでも残ったPORTのLISTENプロセスも停止する。
+    if [ -n "$DEV_WINPID" ]; then
+      taskkill //PID "$DEV_WINPID" //T //F > /dev/null 2>&1 || true
+    fi
+    for pid in $(netstat -ano 2>/dev/null | awk -v p=":$PORT" '$2 ~ p"$" && $4 == "LISTENING" {print $5}' | sort -u); do
+      taskkill //PID "$pid" //T //F > /dev/null 2>&1 || true
+    done
+    return
+  fi
   # `npm run dev` は内部でNuxt/Nitro本体を子プロセス（forkモード）として起動するため、
   # DEV_PIDだけをkillしても本体プロセスが残ってしまう。setsidで新しいセッションを作って
   # 起動し、DEV_PID(セッションリーダー)に対して「-」付きで送ることでプロセスグループ
@@ -45,8 +64,14 @@ cleanup() {
 trap cleanup EXIT
 
 echo "==> devサーバーを起動します (port=$PORT)"
-setsid bash -c "cd '$FRONT_DIR' && exec npm run dev -- --port '$PORT'" > "$DEV_LOG" 2>&1 &
-DEV_PID=$!
+if [ "$IS_WINDOWS" -eq 1 ]; then
+  bash -c "cd '$FRONT_DIR' && exec npm run dev -- --port '$PORT'" > "$DEV_LOG" 2>&1 &
+  DEV_PID=$!
+  DEV_WINPID="$(cat "/proc/$DEV_PID/winpid" 2>/dev/null || true)"
+else
+  setsid bash -c "cd '$FRONT_DIR' && exec npm run dev -- --port '$PORT'" > "$DEV_LOG" 2>&1 &
+  DEV_PID=$!
+fi
 
 READY=0
 for _ in $(seq 1 30); do
@@ -87,13 +112,30 @@ fi
 echo "==> スクリーンショットとconsoleログを採取します"
 TARGET_URL="http://localhost:$PORT$URL_PATH"
 
-# 一時インストールしたplaywrightのバージョンと /opt/pw-browsers にあるブラウザの
-# ビルド番号がずれていることがあるため、既存のchromium実行ファイルを明示的に渡す。
-# こうしないと新しいバージョン番号のディレクトリを探しに行って失敗する。
-CHROMIUM_EXECUTABLE_PATH="${CHROMIUM_EXECUTABLE_PATH:-$(find "${PLAYWRIGHT_BROWSERS_PATH:-/opt/pw-browsers}" -maxdepth 3 -type f -path '*/chromium-*/chrome-linux/chrome' 2>/dev/null | sort | tail -1)}"
+PW_CHANNEL="${PLAYWRIGHT_CHANNEL:-}"
+if [ "$IS_WINDOWS" -eq 1 ]; then
+  # Windowsには/opt/pw-browsersが無いため、インストール済みのChrome（無ければEdge）を
+  # Playwrightのchannel指定で使う。ブラウザ本体のダウンロードは不要。
+  CHROMIUM_EXECUTABLE_PATH="${CHROMIUM_EXECUTABLE_PATH:-}"
+  if [ -z "$CHROMIUM_EXECUTABLE_PATH" ] && [ -z "$PW_CHANNEL" ]; then
+    if [ -f "/c/Program Files/Google/Chrome/Application/chrome.exe" ]; then
+      PW_CHANNEL=chrome
+    else
+      PW_CHANNEL=msedge
+    fi
+  fi
+  # nodeはネイティブのWindowsプログラムなので、NODE_PATHはWindows形式のパスで渡す。
+  PW_NODE_MODULES="$(cygpath -w "$PW_NODE_MODULES")"
+else
+  # 一時インストールしたplaywrightのバージョンと /opt/pw-browsers にあるブラウザの
+  # ビルド番号がずれていることがあるため、既存のchromium実行ファイルを明示的に渡す。
+  # こうしないと新しいバージョン番号のディレクトリを探しに行って失敗する。
+  CHROMIUM_EXECUTABLE_PATH="${CHROMIUM_EXECUTABLE_PATH:-$(find "${PLAYWRIGHT_BROWSERS_PATH:-/opt/pw-browsers}" -maxdepth 3 -type f -path '*/chromium-*/chrome-linux/chrome' 2>/dev/null | sort | tail -1)}"
+  export PLAYWRIGHT_BROWSERS_PATH="${PLAYWRIGHT_BROWSERS_PATH:-/opt/pw-browsers}"
+fi
 
-NODE_PATH="$PW_NODE_MODULES" PLAYWRIGHT_BROWSERS_PATH="${PLAYWRIGHT_BROWSERS_PATH:-/opt/pw-browsers}" \
-  CHROMIUM_EXECUTABLE_PATH="$CHROMIUM_EXECUTABLE_PATH" \
+NODE_PATH="$PW_NODE_MODULES" \
+  CHROMIUM_EXECUTABLE_PATH="$CHROMIUM_EXECUTABLE_PATH" PLAYWRIGHT_CHANNEL="$PW_CHANNEL" \
   node "$SCRIPT_DIR/capture.cjs" "$TARGET_URL" "$OUT_DIR"
 
 echo "==> 出力先: $OUT_DIR"

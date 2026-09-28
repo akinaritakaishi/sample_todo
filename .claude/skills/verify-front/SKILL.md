@@ -9,7 +9,7 @@ description: front/(Nuxt製アプリ)を実際に起動し、Playwrightでスク
 
 ## なぜスクリプト化したか
 
-このコンテナには通常Playwrightがインストールされておらず、ブラウザ本体（Chromium）だけが `/opt/pw-browsers/chromium` に用意されています。そのため動作確認のたびに「ポートが競合しないdevサーバーの起動方法」「`/tmp`へのPlaywright即席インストール」「終了時のプロセス後始末」を都度考えると、手順がぶれたりdevサーバーが停止し忘れでプロセスがリークしたりします。`scripts/run-and-verify.sh` はこれらを毎回同じ手順で確実に行うためのものです。
+このコンテナには通常Playwrightがインストールされておらず、ブラウザ本体（Chromium）だけが `/opt/pw-browsers/chromium` に用意されています（Windowsのローカル環境での違いは後述の「Windows（Git Bash）で使う場合」を参照）。そのため動作確認のたびに「ポートが競合しないdevサーバーの起動方法」「`/tmp`へのPlaywright即席インストール」「終了時のプロセス後始末」を都度考えると、手順がぶれたりdevサーバーが停止し忘れでプロセスがリークしたりします。`scripts/run-and-verify.sh` はこれらを毎回同じ手順で確実に行うためのものです。
 
 ## 使い方
 
@@ -27,6 +27,23 @@ description: front/(Nuxt製アプリ)を実際に起動し、Playwrightでスク
 2. `front/node_modules/playwright` があればそれを使い、無ければリポジトリ外のスクラッチ領域（既定 `/tmp/verify-front-pw`、`VERIFY_FRONT_SCRATCH_DIR`環境変数で変更可）に `PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1` を付けて軽量インストールする（ブラウザ本体の再ダウンロードを避け、既存の `/opt/pw-browsers` を使う）
 3. `scripts/capture.cjs` で対象URLを開き、`OUT_DIR/screenshot.png`（フルページ）と `OUT_DIR/console.json`（`error`/`warning`/`pageerror`のみ）を出力する
 4. 成功・失敗にかかわらず`trap`でdevサーバープロセスを停止する
+
+スクリーンショットは`docs/screens/`の仕様書にもそのまま使えるよう、撮影前にNuxt DevToolsのバッジを非表示にしている。
+
+## Windows（Git Bash）で使う場合
+
+スクリプトは`uname -s`でWindows（MINGW/MSYS/Cygwin）を判定し、次のように動作を切り替える。呼び出し方はLinuxと同じで、Git Bash（ClaudeのBashツール）から実行する。
+
+- devサーバー: `setsid`が無いため普通にバックグラウンド起動し、終了時は`taskkill /T /F`でプロセスツリーごと停止する。それでも`PORT`でLISTENしているプロセスが残っていれば、それも停止する。
+- ブラウザ: `/opt/pw-browsers`が無いため、インストール済みのChrome（無ければEdge）をPlaywrightの`channel`指定で使う。ブラウザ本体のダウンロードは不要。`PLAYWRIGHT_CHANNEL`（`chrome`/`msedge`）や`CHROMIUM_EXECUTABLE_PATH`環境変数で上書きできる。
+- Playwrightの一時インストール先: 既定の`/tmp/verify-front-pw`（Git BashではユーザーのTempフォルダ）で動くが、セッションのスクラッチディレクトリがあれば`VERIFY_FRONT_SCRATCH_DIR`で指定するとよい。
+
+### 既に別のfront/のdevサーバーが動いている場合
+
+デモ用などで`front/`のdevサーバー（例: `./scripts/demo-up.sh`で起動したport 3000）が動いていると、Nuxtのロックにより「Another Nuxt dev server is already running」で起動に失敗する（`OUT_DIR/dev-server.log`で確認できる）。同じ`front/`で2つ目のdevサーバーを動かすと`.nuxt/`と`.data/`を共有して既存サーバーを壊しうるため、`NUXT_IGNORE_LOCK=1`をそのまま付けて回避しないこと。次のどちらかで対応する。
+
+- ユーザーに確認の上、既存のサーバーを停止してから実行する（`./scripts/demo-down.sh [PORT]`）。
+- 既存サーバーを止めたくない場合は、スクラッチディレクトリに`git worktree add`で作業ツリーを複製し（未コミットの変更は`git diff | git apply`で持ち込む）、そこで`front/`の`npm ci`を行ってから、`NUXT_IGNORE_LOCK=1`を付けて複製側のスクリプトを実行する。`.nuxt/`・`.data/`が別になるので既存サーバーに影響しない。使い終わった作業ツリーは`git -c core.longpaths=true worktree remove --force <path>`で削除する（Windowsでは`node_modules`のパスが長く、`core.longpaths`無しだと削除に失敗する）。
 
 ## 実行後にやること
 
