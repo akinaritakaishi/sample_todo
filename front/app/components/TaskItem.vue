@@ -4,8 +4,17 @@ const props = defineProps({
 })
 const emit = defineEmits(['toggle', 'delete'])
 
+// Judge due status only on the client after mount: the server's local date may differ
+// from the browser's, and Vue does not patch class mismatches during hydration.
+const now = ref(null)
+onMounted(() => {
+  now.value = new Date()
+})
+
 // Completed tasks are never highlighted, regardless of due date.
-const dueStatus = computed(() => (props.task.done ? null : getDueStatus(props.task.due)))
+const dueStatus = computed(() =>
+  props.task.done || !now.value ? null : getDueStatus(props.task.due, now.value),
+)
 </script>
 
 <template>
