@@ -19,7 +19,7 @@ front/
     components/
       TaskItem.vue       # タスク1件分の表示
     utils/
-      tasks.js           # formatDue()
+      tasks.js           # formatDue(), getDueStatus()
       chat.js            # formatTime()
     assets/
       css/
@@ -53,8 +53,8 @@ front/
 - `app/app.vue` — 全ページ共通のナビゲーション（Tasks / Chat）と `<NuxtPage />` を配置する。
 - `app/pages/index.vue` — `useFetch('/api/tasks')` でタスク一覧を取得し、フォーム入力（`title`/`due`）を保持する。追加・完了切替・削除・完了済み一括削除の操作は、それぞれ対応する`server/api/tasks/*`エンドポイントを`$fetch`で呼んだ後に`refresh()`でタスク一覧を再取得する。タスク状態を変更するのはここだけであり、`TaskItem`は表示専用で`toggle`/`delete`イベント経由で呼び出される。
 - `app/pages/chat.vue` — `useFetch('/api/chat/rooms')`でチャンネル一覧を取得し、選択中のチャンネルID（`selectedRoomId`）を保持する。`useFetch('/api/chat/messages', { query: { room: selectedRoomId } })`は`selectedRoomId`の変更に応じて自動的に再取得される。投稿者名（`author`）と本文（`text`）も保持し、送信時に`server/api/chat/messages.post.js`を呼び、`refresh()`で一覧を再取得する。
-- `app/components/TaskItem.vue` — タスク1件分の表示のみを行う。propsのみに依存する。
-- `app/utils/tasks.js` / `app/utils/chat.js` — 表示用フォーマット関数（`due`の日付表示、メッセージ時刻表示）。Nuxtの自動importにより各ページ・コンポーネントから直接呼び出せる。
+- `app/components/TaskItem.vue` — タスク1件分の表示のみを行う。propsと現在日時に依存する（期限の強調表示は`getDueStatus()`でマウント後のブラウザのローカル日付から判定するため、同じpropsでも日付が変われば表示が変わる。SSR時は強調しない）。
+- `app/utils/tasks.js` / `app/utils/chat.js` — 表示用フォーマット関数・判定関数（`due`の日付表示、期限区分（期限切れ/今日/明日）の判定`getDueStatus()`、メッセージ時刻表示）。Nuxtの自動importにより各ページ・コンポーネントから直接呼び出せる。
 
 ### サーバー側（`server/`）
 

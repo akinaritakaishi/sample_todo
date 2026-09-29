@@ -10,6 +10,10 @@
   --color-accent-dark: #22705f;
   --color-accent-bg: #e7f3ef;
   --color-done: #b7bfbc;
+  --color-danger: #c62828;
+  --color-danger-bg: #fdecea;
+  --color-warning: #a65600;
+  --color-warning-bg: #fff4e5;
   --shadow-card: 0 1px 2px rgba(30, 40, 37, 0.06);
 }
 
@@ -219,6 +223,45 @@ body {
   color: var(--color-done);
 }
 
+/* Due-date highlight: keep it to the left edge and a label, never fill the whole row. */
+.task-item.due-overdue,
+.task-item.due-today,
+.task-item.due-tomorrow {
+  /* Offset the thicker border so the checkbox stays aligned with other rows. */
+  padding-left: 11px;
+  border-left-width: 4px;
+}
+
+.task-item.due-overdue,
+.task-item.due-today {
+  border-left-color: var(--color-danger);
+}
+
+.task-item.due-tomorrow {
+  border-left-color: var(--color-warning);
+}
+
+.task-due-label {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 0 6px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.6;
+}
+
+.task-item.due-overdue .task-due-label,
+.task-item.due-today .task-due-label {
+  color: var(--color-danger);
+  background: var(--color-danger-bg);
+}
+
+.task-item.due-tomorrow .task-due-label {
+  color: var(--color-warning);
+  background: var(--color-warning-bg);
+}
+
 .task-delete {
   flex-shrink: 0;
   background: none;
@@ -232,8 +275,8 @@ body {
 }
 
 .task-delete:hover {
-  color: #c62828;
-  background: #fdecea;
+  color: var(--color-danger);
+  background: var(--color-danger-bg);
 }
 
 .chat-layout {

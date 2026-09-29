@@ -35,8 +35,8 @@ ClaudeへのMCPサーバー登録手順（Claude Code CLI / Claude Desktop）や
 
 - `app/pages/index.vue` — ToDo画面。`useFetch`/`$fetch` で `server/api/tasks` を呼び出し、追加・完了切替・削除・完了済み一括削除を行う。
 - `app/pages/chat.vue` — チャット画面。Slack風にチャンネル（部屋）一覧をサイドバーに表示し、`server/api/chat/rooms`・`server/api/chat/messages`（チャンネルID`room`をクエリ指定）を呼び出して、選択中チャンネルのメッセージ一覧取得と投稿を行う。
-- `app/components/TaskItem.vue` — タスク1件分の表示のみを行う。propsのみに依存する。
-- `app/utils/tasks.js` / `app/utils/chat.js` — 表示用のフォーマット関数（`formatDue`、`formatTime`、アバター表示用の`getAvatarInitial`/`getAvatarColor`）。Nuxtの自動importで各ページから参照される。
+- `app/components/TaskItem.vue` — タスク1件分の表示のみを行う。propsと現在日時に依存する（期限の強調表示は`getDueStatus()`でマウント後のブラウザのローカル日付から判定するため、同じpropsでも日付が変われば表示が変わる。SSR時は強調しない）。
+- `app/utils/tasks.js` / `app/utils/chat.js` — 表示用のフォーマット関数・判定関数（`formatDue`、期限区分を判定する`getDueStatus`とそのラベル`DUE_STATUS_LABELS`、`formatTime`、アバター表示用の`getAvatarInitial`/`getAvatarColor`）。Nuxtの自動importで各ページから参照される。
 - `server/api/tasks/*` — タスクのCRUD API。`server/utils/task-store.js` を通じてサーバー側JSONファイルに永続化する。
 - `server/api/chat/*` — チャンネル一覧取得・チャットメッセージの取得・投稿API。`server/utils/chat-store.js` を通じてサーバー側JSONファイルに永続化する（チャンネル一覧は`server/data/chat-rooms.json`の固定データ）。
 - `server/utils/json-store.js` — `front/.data/`配下のJSONファイルの読み書きを行う共通ユーティリティ（gitignore対象、初回はシードデータにフォールバック）。
