@@ -30,6 +30,16 @@ if (!existsSync(eslintBin) || !existsSync(path.join(frontDir, '.nuxt', 'eslint.c
 const result = spawnSync(process.execPath, [eslintBin, relative], { cwd: frontDir, encoding: 'utf8' })
 if (result.status === 0) process.exit(0)
 
+// ESLint exits with 1 only for lint problems. A spawn error or exit 2 (config error, crash) is not
+// something Claude can fix in the edited file, so report it without blocking (exit 1).
+if (result.status !== 1) {
+  process.stderr.write(
+    `Skipped ESLint hook: ESLint could not run (${result.error?.message ?? `exit code ${result.status}`}).\n` +
+      (result.stderr || ''),
+  )
+  process.exit(1)
+}
+
 process.stderr.write(
   `ESLint reported problems in front/${relative.split(path.sep).join('/')}. Fix them before continuing.\n` +
     (result.stdout || '') +
