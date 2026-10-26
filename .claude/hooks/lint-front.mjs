@@ -6,6 +6,7 @@ import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 
 const LINT_EXTENSIONS = new Set(['.js', '.mjs', '.cjs', '.ts', '.mts', '.cts', '.jsx', '.tsx', '.vue'])
+const SKIP_DIRS = new Set(['node_modules', '.nuxt', '.output', '.data'])
 
 const input = JSON.parse(readFileSync(0, 'utf8') || '{}')
 const filePath = input.tool_input?.file_path
@@ -18,7 +19,7 @@ const relative = path.relative(frontDir, target)
 
 // Skip files outside front/, generated directories and non-lint targets.
 if (relative.startsWith('..') || path.isAbsolute(relative)) process.exit(0)
-if (/^(node_modules|\.nuxt|\.output|\.data)[\/]/.test(relative)) process.exit(0)
+if (SKIP_DIRS.has(relative.split(path.sep)[0])) process.exit(0)
 if (!LINT_EXTENSIONS.has(path.extname(target))) process.exit(0)
 
 // eslint.config.mjs imports .nuxt/eslint.config.mjs, so both deps and nuxt prepare are required.
