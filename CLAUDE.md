@@ -49,4 +49,4 @@ ClaudeへのMCPサーバー登録手順（Claude Code CLI / Claude Desktop）や
 
 コーディング規約・Git規約・ADR運用・`docs/demo/`の扱いなどの詳細は `.claude/rules/` 配下に分割してある。ファイルタイプ・ディレクトリに紐づくもの（コーディング規約など）は該当パスを開いたときだけ読み込まれ、Git規約・ADR運用のようにpathsを持たないものは常時読み込まれる。このファイルには、どのセッションでも常に前提となる概要だけを書く。
 
-CLAUDE.md・`.claude/rules/`・スキルは「AIに守ってもらう指示（お願い）」、絶対に守らせたい制約（`.env`系の読み取り禁止、force push・`rm -rf`の禁止など）は `.claude/settings.json` の `permissions` で「強制」する、という役割分担にしている（ADR 0008）。個人用の設定は `.claude/settings.local.json` に置く。
+CLAUDE.md・`.claude/rules/`・スキルは「AIに守ってもらう指示（お願い）」、絶対に守らせたい制約（`.env`系の読み取り禁止、force push・`rm -rf`の禁止など）は `.claude/settings.json` の `permissions` で「強制」する、という役割分担にしている（ADR 0008）。個人用の設定は `.claude/settings.local.json`（ルートの`.gitignore`で除外）に置く。

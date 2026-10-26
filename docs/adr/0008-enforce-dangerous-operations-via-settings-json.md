@@ -13,6 +13,7 @@
 
 - `.env`・`.env.local`・`.env.*.local`・`.env.{development,production,staging,test}`の読み取り（`.env.example`は読めるよう、`.env.*`の一括指定はしない）
 - `git push`の`--force`・`--force-with-lease`・`-f`・`+refspec`
+- 上記`.env`系のパスを`cat`・`head`・`tail`・`less`・`more`で読むBashコマンド
 - `rm -rf`とその表記ゆれ（`-fr`・`-r -f`・`--recursive --force`など）
 
 また`permissions.allow`で`front/`の`npm run lint`を確認なしで実行できるようにする。「指示はCLAUDE.md・rules・スキル、強制したい制約はsettings.json」という役割分担をCLAUDE.mdに明記する。
@@ -25,5 +26,5 @@
 ## 結果・影響
 
 - 全メンバーのセッションで上記操作が権限により拒否される。正当に必要な場合は人間が手動で実行する
-- Bashのdenyはコマンド文字列のパターン一致なので、`bash -c`経由や別表記などで回避されうる。完全な防御ではないため、`check_secrets.sh`による二重チェックは残す
+- `Read(...)`のdenyはReadツールにしか効かないため、Bash経由の代表的な読み取り（`cat`・`head`・`tail`・`less`・`more`に`.env`系のパスを渡す形）も別途denyしている。ただしBashのdenyはコマンド文字列のパターン一致なので、`grep`・`sed`・`bash -c`経由や別表記などでは回避されうる。完全な防御ではないため、`check_secrets.sh`による二重チェックは残す
 - 新しい`.env`の命名を使う場合はdenyリストへの追加が必要
