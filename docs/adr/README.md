@@ -16,3 +16,4 @@
 - [0005: OpenAPIドキュメントをNitroのdefineRouteMetaから自動生成する](./0005-generate-openapi-from-nitro-route-meta.md)
 - [0006: PR本文のスクリーンショットはdocs/screens/を参照する方式にする（PRごとのアーカイブは廃止）](./0006-reference-docs-screens-in-pr-body-instead-of-archiving.md)（PR本文への埋め込み方法はADR 0007で変更）
 - [0007: PR本文のスクリーンショットはmainブランチを指す`<img>`タグで埋め込む](./0007-embed-pr-screenshots-with-img-tag-pointing-at-main.md)
+- [0008: 危険な操作の禁止はプロジェクト共有の`.claude/settings.json`の権限設定で強制する](./0008-enforce-dangerous-operations-via-settings-json.md)
