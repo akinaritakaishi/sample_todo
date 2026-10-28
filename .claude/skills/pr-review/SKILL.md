@@ -21,12 +21,12 @@ Pull RequestのレビューをGitHub ActionsのCIで自動化するとコスト�
 
 差分のレビューと分類は`reviewer`サブエージェント（`.claude/agents/reviewer.md`）に任せる。実装したのと同じセッションでレビューすると、実装時の前提や意図に引きずられた甘いレビューになりやすく、差分の読み込みでメインセッションのコンテキストも消費するため（ADR 0009）。サブエージェントは読み取り系ツールしか持たないので、必要な材料をこのセッションでファイルに保存して渡す。
 
-材料はすべて手順1-1で決めた1つのSHAから作る。監視中に続けてpushされても、差分と全文が別のコミットのものにならないようにするため。保存先はスクラッチパッド（なければ一時ディレクトリ）とする。
+材料はすべて手順1-1で決めた1つのSHAから作る。監視中に続けてpushされても、差分と全文が別のコミットのものにならないようにするため。保存先は、スクラッチパッド（なければ一時ディレクトリ）の下にSHAごとに作る新しいディレクトリ`pr-<PR番号>-<SHAの先頭7桁>/`（以下`<保存先>`）とする。前回のheadで保存したファイルが残っていると、新しいheadでは削除されたファイルをreviewerが読んで誤った指摘をするため、再レビューでも前回のディレクトリは使い回さない（消して作り直す方法は、`settings.json`で`rm -rf`をdenyしているため取らない）。
 
 1. `gh pr view <PR番号> --json headRefOid,baseRefName`でheadのSHAとbaseブランチ名を取得し、`git fetch origin <baseブランチ名> pull/<PR番号>/head`で両方を取得する。以降、headはこの`<SHA>`で固定する
-2. 差分を`git diff origin/<baseブランチ名>...<SHA>`で`pr-<PR番号>.diff`に保存する（`gh pr diff`はその時点の最新headを返すため使わない）
-3. 変更されたファイルを`git diff --name-only --diff-filter=d origin/<baseブランチ名>...<SHA>`で列挙し（削除されたファイルを除く）、それぞれのhead時点の全文を`git show <SHA>:<path>`で`pr-<PR番号>-head/<path>`に保存する
-4. 再レビューのときは、PR上の過去の指摘スレッド（本文が`[レビュワー]`で始まるインラインコメントと、それへの返信）を`gh api repos/<owner>/<repo>/pulls/<PR番号>/comments`で取得し、スレッドごとに`file`・`line`・指摘本文・返信本文をまとめて`pr-<PR番号>-threads.json`に保存する
+2. 差分を`git diff origin/<baseブランチ名>...<SHA>`で`<保存先>/pr.diff`に保存する（`gh pr diff`はその時点の最新headを返すため使わない）
+3. 変更されたファイルを`git diff --name-only --diff-filter=d origin/<baseブランチ名>...<SHA>`で列挙し（削除されたファイルを除く）、それぞれのhead時点の全文を`git show <SHA>:<path>`で`<保存先>/head/<path>`に保存する
+4. 再レビューのときは、PR上の過去の指摘スレッド（本文が`[レビュワー]`で始まるインラインコメントと、それへの返信）を`gh api --paginate --slurp repos/<owner>/<repo>/pulls/<PR番号>/comments`で取得し、スレッドごとに`file`・`line`・指摘本文・返信本文をまとめて`<保存先>/threads.json`に保存する（一覧系のAPIは既定で30件ずつしか返さないため`--paginate`を省かない。`--paginate`だけだとページごとの配列が連結されて出力されJSONとして読めないため、`--slurp`で「ページの配列の配列」にしてから平坦化する）
 
 ### 2. reviewerサブエージェントにレビューを依頼する
 
