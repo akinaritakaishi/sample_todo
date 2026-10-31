@@ -12,7 +12,7 @@ npm ci
 npm run dev      # 開発サーバー起動 (Nuxt)
 npm run build    # 本番ビルド、出力先は front/.output/
 npm run preview  # 本番ビルドのプレビュー
-npm run lint      # ESLintによる静的解析
+npm run lint      # ESLintによる静的解析（front/配下のファイルをClaude Codeで編集した際は、そのファイルだけhookでも自動実行される）
 npm run generate:openapi  # docs/api/openapi.json を再生成
 npm run demo:reset        # front/.data配下を削除し、次回アクセス時にシードデータへ戻す（デモの再実行前などに使用）
 ```

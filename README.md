@@ -32,7 +32,7 @@ npm run generate:openapi  # docs/api/openapi.json を再生成
 - `server/api/` — タスク・チャットメッセージのAPI
 - `server/utils/` — サーバー側JSONファイル（`front/.data/`）への永続化ロジック
 
-`npm run lint`はPull Request作成時に`.github/workflows/lint.yml`（GitHub Actions）でも自動実行されます。
+`npm run lint`はPull Request作成時に`.github/workflows/lint.yml`（GitHub Actions）でも自動実行されます。また、Claude Codeで`front/`配下のファイルを編集した際は、`.claude/hooks/lint-front.mjs`（PostToolUse hook）がそのファイルだけESLintを実行し、エラーがあればClaudeに修正させます。
 
 ## mcp-server
 
