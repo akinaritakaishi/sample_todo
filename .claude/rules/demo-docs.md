@@ -19,3 +19,7 @@ paths:
 - `10月申請分/`の申請書・領収書、`経費精算ルール/`の申請書テンプレート、台帳は`expense/tools/generate.py`で生成している。内容を変える場合はスクリプトを直して再生成し、台本（`expense/README.md`）の期待結果も揃えること。
 - 経費精算チャンネル（`expense`）の案内メッセージは`front/server/data/seed-chat-messages.json`に入っている。
 
+
+## `writing/`（デモ3: CLAUDE.md / rules の比較）
+
+`writing/`配下も**勉強会用の架空の資料**。スキル`writing-compare`から参照される。台本は`writing/README.md`。`claude-md/CLAUDE.md`と`.claude/rules/demo-writing.md`は、デモで差を見せるための文章ルールであり、このリポジトリの実際の規約ではない。
