@@ -25,7 +25,7 @@ Pull RequestのレビューをGitHub ActionsのCIで自動化するとコスト�
 
 1. `gh pr view <PR番号> --json headRefOid,baseRefName`でheadのSHAとbaseブランチ名を取得し、`git fetch origin <baseブランチ名> pull/<PR番号>/head`で両方を取得する。以降、headはこの`<SHA>`で固定する
 2. 差分を`git diff origin/<baseブランチ名>...<SHA>`で`<保存先>/pr.diff`に保存する（`gh pr diff`はその時点の最新headを返すため使わない）
-3. 変更されたファイルを`git diff --name-only --diff-filter=d origin/<baseブランチ名>...<SHA>`で列挙し（削除されたファイルを除く）、それぞれのhead時点の全文を`git show <SHA>:<path>`で`<保存先>/head/<path>`に保存する
+3. 変更されたファイルを`git -c core.quotepath=false diff --name-only --diff-filter=d origin/<baseブランチ名>...<SHA>`で列挙し（削除されたファイルを除く。`core.quotepath=false`を省くと`docs/demo/`配下などの日本語パスが8進エスケープで出力され、`git show`に渡せない）、それぞれのhead時点の全文を`git show <SHA>:<path>`で`<保存先>/head/<path>`に保存する
 4. 再レビューのときは、PR上の過去の指摘スレッド（本文が`[レビュワー]`で始まるインラインコメントと、それへの返信）を`gh api --paginate --slurp repos/<owner>/<repo>/pulls/<PR番号>/comments`で取得し、スレッドごとに`file`・`line`・指摘本文・返信本文をまとめて`<保存先>/threads.json`に保存する（一覧系のAPIは既定で30件ずつしか返さないため`--paginate`を省かない。`--paginate`だけだとページごとの配列が連結されて出力されJSONとして読めないため、`--slurp`で「ページの配列の配列」にしてから平坦化する）
 
 ### 2. reviewerサブエージェントにレビューを依頼する
@@ -48,7 +48,7 @@ GitHub MCPのレビューAPIで、指摘と判断を**1つのレビュー**と�
 2. 指摘ごとに`add_comment_to_pending_review`で該当ファイル・行へインラインコメント。本文は`[レビュワー] **must:** <指摘内容>`のように、見出し`[レビュワー]`とラベル（太字）を先頭に置き、修正担当（`fix-and-verify`）が読んで着手できるよう「何が問題か・どう直すとよいか」まで書く
 3. `pull_request_review_write`（`submit_pending`）で、次の判断に従って提出
 
-Approveするのは **「今回の新規指摘が0件」かつ「過去のレビューで付けた指摘（must/imo/nitsすべて）の各スレッドに、対応内容または対応しない理由の返信が付いている」** ときだけです。imo/nitsであっても、対応可否が返信で埋まっていない限りApproveしません。過去の指摘スレッドは`mcp__github__pull_request_read`でレビューコメントを取得して確認します。
+Approveするのは **「今回の新規指摘が0件」かつ「過去のレビューで付けた指摘（must/imo/nitsすべて）の各スレッドに、対応内容または対応しない理由の返信が付いている」** ときだけです。imo/nitsであっても、対応可否が返信で埋まっていない限りApproveしません。過去の指摘スレッドは、手順1-4で保存した`<保存先>/threads.json`で確認します（同じSHA時点の材料で判定するため、別の手段で取り直さない）。
 
 | 状況 | event | レビュー本文 |
 | --- | --- | --- |

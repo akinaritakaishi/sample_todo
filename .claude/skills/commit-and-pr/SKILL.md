@@ -9,7 +9,7 @@ description: このリポジトリでの変更をコミットし、Pull Request�
 
 ## なぜこの手順が必要か
 
-このリポジトリでは、コミット規約やPRの型が`CLAUDE.md`と`.github/pull_request_template.md`にすでに定義されています。人間のレビュアーは「これはどのチケット由来か」「何をやって何をやっていないか」「どう確認したか」を毎回同じ場所で読みたいので、その形式を外すとレビューコストが上がります。またクレデンシャルの誤コミットは一度pushすると履歴に残り続けるため、コミット前に機械的なチェックを挟む価値があります。
+このリポジトリでは、コミット規約やPRの型が`.claude/rules/git-conventions.md`と`.github/pull_request_template.md`にすでに定義されています。人間のレビュアーは「これはどのチケット由来か」「何をやって何をやっていないか」「どう確認したか」を毎回同じ場所で読みたいので、その形式を外すとレビューコストが上がります。またクレデンシャルの誤コミットは一度pushすると履歴に残り続けるため、コミット前に機械的なチェックを挟む価値があります。
 
 ## 手順
 
@@ -36,7 +36,7 @@ bash .claude/skills/commit-and-pr/scripts/check_secrets.sh
 
 ### 3. コミットする
 
-コミットメッセージは`CLAUDE.md`の規約に従います（このリポジトリ固有のルールなので、他のリポジトリに同じ規約を持ち込まないこと）。
+コミットメッセージは`.claude/rules/git-conventions.md`の規約に従います（このリポジトリ固有のルールなので、他のリポジトリに同じ規約を持ち込まないこと）。
 
 - 件名は簡潔な英語の命令形（例: `Add due date badge coloring`）
 - Conventional Commits形式（`feat:`, `fix:`など）のプレフィックスは付けない
@@ -104,20 +104,20 @@ PRの説明文は**日本語**で書き、`.github/pull_request_template.md`の�
 
 ```mermaid
 flowchart LR
-    A[App.jsx: フォーム入力] --> B[tasks配列を更新]
-    B --> C[localStorageへ保存]
-    B --> D[TaskItem再描画]
+    A[pages/index.vue: フォーム入力] --> B[POST /api/tasks]
+    B --> C[task-store.jsでJSONに保存]
+    A --> D[TaskItem.vue再描画]
 ```
 
 ```mermaid
 sequenceDiagram
     participant U as ユーザー
-    participant App as App.jsx
-    participant LS as localStorage
-    U->>App: タスクを追加
-    App->>App: tasks stateを更新
-    App->>LS: 保存
-    App-->>U: 一覧に反映
+    participant Page as pages/index.vue
+    participant API as server/api/tasks
+    U->>Page: タスクを追加
+    Page->>API: POST /api/tasks
+    API-->>Page: 作成したタスク
+    Page-->>U: 一覧に反映
 ```
 
 図は「実際にこのPRで変わった構造・フロー」だけを描き、変更していない部分まで詳細に描き込まないでください。

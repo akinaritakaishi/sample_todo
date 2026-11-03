@@ -11,7 +11,7 @@ description: 勉強会デモ2用のスキル。`docs/demo/expense/10月申請分
 
 ## 前提
 
-- Excelの読み書きはPythonの`openpyxl`で行う（未インストールなら`python3 -m pip install openpyxl`）。
+- Excelの読み書きはPythonの`openpyxl`で行う（未インストールなら`python3 -m pip install openpyxl`。Windowsで`python3`が無い場合は`python`または`py`に読み替える）。
 - 領収書PDFはReadツールで直接読む。
 - 通知はMCPサーバー`sample-todo-chat`の`send_chat_message`を使う。ツールが見つからない場合は通知せず、その旨を最後の報告に書く（台帳の「通知日時」は空欄のまま）。
 
