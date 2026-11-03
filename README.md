@@ -51,6 +51,7 @@ npm start
 - [`docs/Architecture.md`](./docs/Architecture.md) — アプリの構成・データフローの説明
 - [`docs/screens/`](./docs/screens/) — 画面ごとの仕様書（UI要素・呼び出すAPI・スクリーンショット）
 - [`docs/api/openapi.json`](./docs/api/openapi.json) — APIのOpenAPI仕様（`front/server/api/`の`defineRouteMeta`から自動生成、詳細は[`docs/api/README.md`](./docs/api/README.md)）
+- [`docs/doc-map.md`](./docs/doc-map.md) — 「このファイルを変えたらどの記述を見直すか」の対応表
 - [`docs/adr/`](./docs/adr/) — 設計・技術選定・運用ルールの意思決定を記録したADR（Architecture Decision Record）
 - [`docs/demo/`](./docs/demo/) — 勉強会デモ用の架空資料（Slackスレッド）。実在の社内規程ではなく、アプリのビルドにも含まれません
 
@@ -62,5 +63,5 @@ AIエージェントに作業してもらうための指示・定型ワークフ
 - [`.claude/rules/`](./.claude/rules/) — コーディング規約・Git規約・ADR運用など、パスやトピックごとに分割した詳細ルール
 - [`.claude/skills/`](./.claude/skills/) — 修正〜PR作成、PRレビュー、Issue起票、ADR作成、動作確認、勉強会デモなどの定型ワークフロー
 - [`.claude/agents/`](./.claude/agents/) — PRレビュー専任のサブエージェント（`reviewer`）
-- [`.claude/settings.json`](./.claude/settings.json) — 危険な操作のdenyと、`front/`編集時にESLintを実行するhook（[`.claude/hooks/`](./.claude/hooks/)）の登録
+- [`.claude/settings.json`](./.claude/settings.json) — 危険な操作のdenyと、hook（[`.claude/hooks/`](./.claude/hooks/)）の登録。`front/`編集時にESLintを実行するhookと、ターンの終わりに[`docs/doc-map.md`](./docs/doc-map.md)の対応表で未更新の記述を知らせるhookがある
 - [`.mcp.json`](./.mcp.json) — チャット用MCPサーバー（`sample-todo-chat`）の登録
