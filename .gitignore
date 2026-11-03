@@ -1,1 +1,4 @@
 .claude/settings.local.json
+
+# writing-compare demo outputs
+docs/demo/writing/*/output*.md
