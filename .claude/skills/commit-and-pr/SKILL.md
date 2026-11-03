@@ -9,7 +9,7 @@ description: このリポジトリでの変更をコミットし、Pull Request�
 
 ## なぜこの手順が必要か
 
-このリポジトリでは、コミット規約やPRの型が`CLAUDE.md`と`.github/pull_request_template.md`にすでに定義されています。人間のレビュアーは「これはどのチケット由来か」「何をやって何をやっていないか」「どう確認したか」を毎回同じ場所で読みたいので、その形式を外すとレビューコストが上がります。またクレデンシャルの誤コミットは一度pushすると履歴に残り続けるため、コミット前に機械的なチェックを挟む価値があります。
+このリポジトリでは、コミット規約やPRの型が`.claude/rules/git-conventions.md`と`.github/pull_request_template.md`にすでに定義されています。人間のレビュアーは「これはどのチケット由来か」「何をやって何をやっていないか」「どう確認したか」を毎回同じ場所で読みたいので、その形式を外すとレビューコストが上がります。またクレデンシャルの誤コミットは一度pushすると履歴に残り続けるため、コミット前に機械的なチェックを挟む価値があります。
 
 ## 手順
 
@@ -36,13 +36,13 @@ bash .claude/skills/commit-and-pr/scripts/check_secrets.sh
 
 ### 3. コミットする
 
-コミットメッセージは`CLAUDE.md`の規約に従います（このリポジトリ固有のルールなので、他のリポジトリに同じ規約を持ち込まないこと）。
+コミットメッセージは`.claude/rules/git-conventions.md`の規約に従います（このリポジトリ固有のルールなので、他のリポジトリに同じ規約を持ち込まないこと）。
 
 - 件名は簡潔な英語の命令形（例: `Add due date badge coloring`）
 - Conventional Commits形式（`feat:`, `fix:`など）のプレフィックスは付けない
 - 本文が必要な場合は、件名の後に空行を挟んで「何を」ではなく「なぜ」を書く
 
-セッションの指示でCo-Authored-ByやClaude-Sessionなどのフッターを付ける運用になっている場合は、それに従ってください。
+セッションの指示でCo-Authored-Byなどのフッターを付ける運用になっている場合は、それに従ってください。
 
 ### 4. リモートにpushする
 
@@ -52,10 +52,10 @@ git push -u origin <ブランチ名>
 
 ### 5. Pull Requestを作成する
 
-まず、そのブランチに対応するPRがすでに存在しないか確認してください（GitHub MCPツールが使える場合は`mcp__github__list_pull_requests`や`mcp__github__pull_request_read`、UI経由で先にPRが作られているケースもあります）。
+まず、そのブランチに対応するPRがすでに存在しないか確認してください（GitHub MCPツールが使える場合は`mcp__github__list_pull_requests`や`mcp__github__pull_request_read`、無ければ`gh pr list --head <ブランチ名> --state all`。UI経由で先にPRが作られているケースもあります）。
 
-- **既存PRがある場合**: 新規作成せず、pushした時点でPRは自動的に更新されます。必要なら`mcp__github__update_pull_request`で説明文を更新してください。
-- **既存PRがない場合**: GitHub MCPツール（`mcp__github__create_pull_request`など）が利用できるならそれで作成します。利用できない・失敗する環境では、`git push`まで行った上で、PR作成用のURL（pushの出力に含まれる`https://github.com/<owner>/<repo>/pull/new/<branch>`）をユーザーに伝え、作成を促してください。
+- **既存PRがある場合**: 新規作成せず、pushした時点でPRは自動的に更新されます。必要なら`mcp__github__update_pull_request`（無ければ`gh pr edit <番号> --body-file <ファイル>`）で説明文を更新してください。
+- **既存PRがない場合**: GitHub MCPツール（`mcp__github__create_pull_request`など）が利用できるならそれで、無ければ`gh pr create --base main --body-file <ファイル>`で作成します。どちらも利用できない・失敗する環境では、`git push`まで行った上で、PR作成用のURL（pushの出力に含まれる`https://github.com/<owner>/<repo>/pull/new/<branch>`）をユーザーに伝え、作成を促してください。
 
 PRのdraft/readyの状態や、レビュアーのアサインなど明示的な指示がない項目については、ユーザーに確認するかデフォルト（ready、アサインなし）で進めてください。
 
@@ -73,7 +73,7 @@ UIの見た目・挙動に影響する変更（表示の追加・変更、レイ
 
    - Markdown画像記法（`![alt](path)`）は使わない。GitHub MCPツール経由でPR本文を登録すると先頭の`!`が落ち、画像ではなくただのリンクとして保存されることがあるため（PR #20・#21で発生）。
    - `src`は**`main`ブランチ**を指す絶対URLにする（ADR 0006の「デフォルトブランチの現在の仕様を参照する」方針どおり。経緯はADR 0007）。作業ブランチを指すURLにすると、マージ後にブランチが削除された時点でリンク切れになる。
-   - 登録後に`mcp__github__pull_request_read`で本文を読み直し、`<img>`タグがそのまま残っていることを確認する。
+   - 登録後に`mcp__github__pull_request_read`（無ければ`gh pr view <番号> --json body`）で本文を読み直し、`<img>`タグがそのまま残っていることを確認する。
 
 画像は`main`ブランチのものを参照するため、マージ前のPR本文には変更前の画像が表示される（マージ後に最新の画像になる）。本文にもその旨を一言添えておくとレビュアーが混乱しない。`docs/screens/`は画面変更のたびに上書きする「現在の仕様」なので、過去にマージ済みのPRの本文に埋め込まれた画像も、その後の変更で見た目が変わりうる（詳細はADR 0006）。UIに影響しない変更（ロジックのみの修正など）ではこの手順は不要。
 
@@ -104,20 +104,20 @@ PRの説明文は**日本語**で書き、`.github/pull_request_template.md`の�
 
 ```mermaid
 flowchart LR
-    A[App.jsx: フォーム入力] --> B[tasks配列を更新]
-    B --> C[localStorageへ保存]
-    B --> D[TaskItem再描画]
+    A[pages/index.vue: フォーム入力] --> B[POST /api/tasks]
+    B --> C[task-store.jsでJSONに保存]
+    A --> D[TaskItem.vue再描画]
 ```
 
 ```mermaid
 sequenceDiagram
     participant U as ユーザー
-    participant App as App.jsx
-    participant LS as localStorage
-    U->>App: タスクを追加
-    App->>App: tasks stateを更新
-    App->>LS: 保存
-    App-->>U: 一覧に反映
+    participant Page as pages/index.vue
+    participant API as server/api/tasks
+    U->>Page: タスクを追加
+    Page->>API: POST /api/tasks
+    API-->>Page: 作成したタスク
+    Page-->>U: 一覧に反映
 ```
 
 図は「実際にこのPRで変わった構造・フロー」だけを描き、変更していない部分まで詳細に描き込まないでください。

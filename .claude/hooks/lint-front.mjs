@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // PostToolUse hook (Edit|Write): run ESLint on the edited file when it is under front/.
-// Exit code 2 sends stderr back to Claude so it can fix the lint errors right away.
+// Exit code 2 sends stderr back to the agent so it can fix the lint errors right away.
 import { spawnSync } from 'node:child_process'
 import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
@@ -32,7 +32,7 @@ const result = spawnSync(process.execPath, [eslintBin, relative], { cwd: frontDi
 if (result.status === 0) process.exit(0)
 
 // ESLint exits with 1 only for lint problems. A spawn error or exit 2 (config error, crash) is not
-// something Claude can fix in the edited file, so report it without blocking (exit 1).
+// something the agent can fix in the edited file, so report it without blocking (exit 1).
 if (result.status !== 1) {
   process.stderr.write(
     `Skipped ESLint hook: ESLint could not run (${result.error?.message ?? `exit code ${result.status}`}).\n` +
