@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-// Stop hook: compare the branch's changes with docs/doc-map.md and, when a mapped source changed but
-// its related docs did not, ask the agent to review them before finishing.
+// Stop hook: compare files changed in this session with docs/doc-map.md and, when a mapped source changed
+// but its related docs did not change on the branch, ask the agent to review them before finishing.
 // Only sources touched in this session (uncommitted, untracked, or committed since the session started)
 // trigger a reminder, so review-only sessions are not asked to edit docs for earlier commits.
 // Exit code 2 sends stderr back to the agent. Each (source pattern, doc) pair is reported at most once

@@ -57,7 +57,7 @@ MCPクライアントへのMCPサーバー登録手順（Claude Code CLI / Claud
 - `.claude/skills/` — 定型ワークフロー。`fix-and-verify`（修正→`verify-front`で動作確認→`commit-and-pr`でPR化→監視）、`pr-review`（材料を用意して`reviewer`サブエージェントにレビューさせ、結果をPRに提出）、`issue-create`、`adr`のほか、勉強会デモ用の`expense-check`・`writing-compare`がある。
 - `.claude/agents/reviewer.md` — `pr-review`から呼ばれる読み取り専用のレビュー担当（ADR 0009）。
 - `.claude/hooks/lint-front.mjs` — `front/`配下をEdit/Writeした直後にそのファイルだけESLintを実行するPostToolUse hook。
-- `.claude/hooks/doc-sync-reminder.mjs` — ターンの終わりにブランチの変更を`docs/doc-map.md`と突き合わせ、対応する記述が未更新なら見直しを促すStop hook（同じセッションで同じ組み合わせは1回だけ）。
+- `.claude/hooks/doc-sync-reminder.mjs` — ターンの終わりに、そのセッションで変更したファイルを`docs/doc-map.md`と突き合わせ、対応する記述が未更新なら見直しを促すStop hook（同じセッションで同じ組み合わせは1回だけ）。
 - `.claude/settings.json` — 権限（deny/allow）とhookの登録。
 - `.mcp.json` — プロジェクトのMCPサーバー（`sample-todo-chat`）。GitHubの操作はGitHub MCPツール（`mcp__github__*`）が無い環境では`gh` CLIで行う。
 
