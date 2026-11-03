@@ -58,4 +58,8 @@ npm start
 
 - [`CLAUDE.md`](./CLAUDE.md) — Claude Codeがこのリポジトリで作業する際の前提ガイダンス
 - [`.claude/rules/`](./.claude/rules/) — コーディング規約・Git規約・ADR運用など、パスやトピックごとに分割した詳細ルール
+- [`.claude/skills/`](./.claude/skills/) — 修正〜PR作成、PRレビュー、Issue起票、ADR作成、動作確認、勉強会デモなどの定型ワークフロー
+- [`.claude/agents/`](./.claude/agents/) — PRレビュー専任のサブエージェント（`reviewer`）
+- [`.claude/settings.json`](./.claude/settings.json) — 危険な操作のdenyと、`front/`編集時にESLintを実行するhook（[`.claude/hooks/`](./.claude/hooks/)）の登録
+- [`.mcp.json`](./.mcp.json) — チャット用MCPサーバー（`sample-todo-chat`）の登録
 - [`.claude/skills/`](./.claude/skills/) — コミット・PR作成、Issue起票、セルフレビューなど定型作業のスキル定義

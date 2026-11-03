@@ -50,7 +50,7 @@ flowchart TD
 
 設計に時間をかける前に、類似Issueを検索して重複起票を避けます。
 
-- `mcp__github__search_issues`（自然言語検索）または `mcp__github__list_issues` を使い、同じ内容のIssueがオープン/クローズ問わず既に存在しないか確認する。
+- `mcp__github__search_issues`（自然言語検索）または `mcp__github__list_issues`（GitHub MCPツールが無ければ`gh issue list --state all --search <キーワード>`）を使い、同じ内容のIssueがオープン/クローズ問わず既に存在しないか確認する。
 - 明らかに重複するIssueが見つかった場合は、新規作成せずそのIssueの内容をユーザーに提示し、コメント追記などの代替手段を提案する。
 - 似ているが完全に同一ではない場合は、その旨を一言添えた上で新規起票してよい（関連Issueとして本文の「補足」に記載する）。
 
@@ -157,7 +157,7 @@ flowchart TD
 
 ### 6. Issueを作成する
 
-ユーザーの了承が得られたら、`mcp__github__issue_write`（またはIssue作成用のGitHub MCPツール）で以下を指定して作成する。
+ユーザーの了承が得られたら、`mcp__github__issue_write`（またはIssue作成用のGitHub MCPツール。無ければ`gh issue create --title ... --body-file <ファイル> --label ...`）で以下を指定して作成する。
 
 - `owner`/`repo`: このリポジトリ（`akinaritakaishi/sample_todo`）
 - `title`: 手順4で組み立てたタイトル

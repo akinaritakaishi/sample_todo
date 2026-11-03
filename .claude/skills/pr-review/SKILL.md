@@ -13,7 +13,7 @@ Pull RequestのレビューをGitHub ActionsのCIで自動化するとコスト�
 
 ## 入力
 
-- 対象PR（番号またはURL）。明示されていなければ、現在のブランチに紐づくPRを`mcp__github__list_pull_requests`（`head`指定）で探し、見つかったPRで合っているかをユーザーに確認してから進める。PRが存在しない場合は、先に`commit-and-pr`スキルでPRを作るよう案内して終了する（このスキル自身はPRを作らない）。
+- 対象PR（番号またはURL）。明示されていなければ、現在のブランチに紐づくPRを`mcp__github__list_pull_requests`（`head`指定、GitHub MCPツールが無ければ`gh pr list --head <ブランチ名>`）で探し、見つかったPRで合っているかをユーザーに確認してから進める。PRが存在しない場合は、先に`commit-and-pr`スキルでPRを作るよう案内して終了する（このスキル自身はPRを作らない）。
 
 ## 手順
 
@@ -36,17 +36,51 @@ Agentツールで`reviewer`サブエージェントを起動し、PR番号・hea
 
 ### 3. 結果を受け取る
 
-サブエージェントは、`must`/`imo`/`nits`のラベル付きの新規指摘の一覧（file・line・summary・failure_scenario・suggestion）をJSONで返す。過去の指摘スレッドと同じ趣旨のものは、reviewer側で除いてある（`reviewer.md`参照）。分類の基準は`reviewer.md`に定義してあり、このスキルでは分類し直さない。ただし、`line`が差分に含まれない行を指していてインラインコメントを付けられない指摘は、差分内の最も近い関連行に付け直すか、レビュー本文に記載する。
+サブエージェントは`reviewer.md`の「返却フォーマット」のJSON（PRの要約・観点ごとの確認結果`checks`・新規指摘`findings`）を返す。過去の指摘スレッドと同じ趣旨のものは、reviewer側で除いてある。分類の基準と観点は`reviewer.md`に定義してあり、このスキルでは分類し直さない。
+
+受け取ったら、提出前に次を確認する。
+
+- JSONとして読めない、`checks`が欠けている、`head_sha`が手順1-1のSHAと違う場合は、その旨を伝えてreviewerに返し直させる（1回まで。それでも直らなければ、そのままユーザーに報告して止める）。
+- `line`が差分に含まれない行を指していてインラインコメントを付けられない指摘は、差分内の最も近い関連行に付け直すか、レビュー本文に記載する。
 
 再レビューのときは、過去の指摘スレッドへの返信状況の確認（手順4のApprove判定）はこのセッションで行う。サブエージェントには毎回PR全体の差分を渡し、新規指摘の判定をさせる。
 
 ### 4. レビューを提出する（インラインコメント＋承認判断）
 
-GitHub MCPのレビューAPIで、指摘と判断を**1つのレビュー**として提出する。
+指摘と判断を**1つのレビュー**として提出する。
 
-1. `pull_request_review_write`（`create`）で保留中レビューを作成
-2. 指摘ごとに`add_comment_to_pending_review`で該当ファイル・行へインラインコメント。本文は`[レビュワー] **must:** <指摘内容>`のように、見出し`[レビュワー]`とラベル（太字）を先頭に置き、修正担当（`fix-and-verify`）が読んで着手できるよう「何が問題か・どう直すとよいか」まで書く
-3. `pull_request_review_write`（`submit_pending`）で、次の判断に従って提出
+- GitHub MCPツールがある場合: `pull_request_review_write`（`create`）で保留中レビューを作成し、指摘ごとに`add_comment_to_pending_review`でインラインコメントを付け、`pull_request_review_write`（`submit_pending`）で提出する。
+- 無い場合: レビュー全体（`commit_id`に手順1-1のSHA、`event`、`body`、`comments`に`path`・`line`・`side: "RIGHT"`・`body`の配列）をJSONファイルに書き、`gh api repos/<owner>/<repo>/pulls/<PR番号>/reviews --method POST --input <JSONファイル>`で1回で提出する。
+
+インラインコメントの本文は次の形にする。修正担当（`fix-and-verify`）がこれだけを読んで着手できるようにするため、reviewerの各フィールドを省略せずに載せる。
+
+```markdown
+[レビュワー] **must:** <summary>
+
+- 観点: <category>（確度: <confidence>）
+- 問題: <failure_scenario>
+- 根拠: <evidence>
+- 修正案: <suggestion>
+```
+
+レビュー本文は次の形にする。1行目は下表の判断に応じた文、続けて件数と、reviewerの`checks`をそのまま表にする（何を見て問題なしとしたかを残し、見落とした観点に人間のレビュアーが気づけるようにするため）。
+
+```markdown
+[レビュワー] <下表のレビュー本文>
+
+<reviewerのsummary>
+
+| must | imo | nits |
+| --- | --- | --- |
+| 1 | 2 | 0 |
+
+| 観点 | 結果 | メモ |
+| --- | --- | --- |
+| correctness | 指摘あり | ... |
+| docs-sync | 該当なし | ... |
+```
+
+提出する`event`と1行目の文は、次の判断に従う。
 
 Approveするのは **「今回の新規指摘が0件」かつ「過去のレビューで付けた指摘（must/imo/nitsすべて）の各スレッドに、対応内容または対応しない理由の返信が付いている」** ときだけです。imo/nitsであっても、対応可否が返信で埋まっていない限りApproveしません。過去の指摘スレッドは、手順1-4で保存した`<保存先>/threads.json`で確認します（同じSHA時点の材料で判定するため、別の手段で取り直さない）。
 

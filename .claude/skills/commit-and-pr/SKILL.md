@@ -52,10 +52,10 @@ git push -u origin <ブランチ名>
 
 ### 5. Pull Requestを作成する
 
-まず、そのブランチに対応するPRがすでに存在しないか確認してください（GitHub MCPツールが使える場合は`mcp__github__list_pull_requests`や`mcp__github__pull_request_read`、UI経由で先にPRが作られているケースもあります）。
+まず、そのブランチに対応するPRがすでに存在しないか確認してください（GitHub MCPツールが使える場合は`mcp__github__list_pull_requests`や`mcp__github__pull_request_read`、無ければ`gh pr list --head <ブランチ名> --state all`。UI経由で先にPRが作られているケースもあります）。
 
-- **既存PRがある場合**: 新規作成せず、pushした時点でPRは自動的に更新されます。必要なら`mcp__github__update_pull_request`で説明文を更新してください。
-- **既存PRがない場合**: GitHub MCPツール（`mcp__github__create_pull_request`など）が利用できるならそれで作成します。利用できない・失敗する環境では、`git push`まで行った上で、PR作成用のURL（pushの出力に含まれる`https://github.com/<owner>/<repo>/pull/new/<branch>`）をユーザーに伝え、作成を促してください。
+- **既存PRがある場合**: 新規作成せず、pushした時点でPRは自動的に更新されます。必要なら`mcp__github__update_pull_request`（無ければ`gh pr edit <番号> --body-file <ファイル>`）で説明文を更新してください。
+- **既存PRがない場合**: GitHub MCPツール（`mcp__github__create_pull_request`など）が利用できるならそれで、無ければ`gh pr create --base main --body-file <ファイル>`で作成します。どちらも利用できない・失敗する環境では、`git push`まで行った上で、PR作成用のURL（pushの出力に含まれる`https://github.com/<owner>/<repo>/pull/new/<branch>`）をユーザーに伝え、作成を促してください。
 
 PRのdraft/readyの状態や、レビュアーのアサインなど明示的な指示がない項目については、ユーザーに確認するかデフォルト（ready、アサインなし）で進めてください。
 
@@ -73,7 +73,7 @@ UIの見た目・挙動に影響する変更（表示の追加・変更、レイ
 
    - Markdown画像記法（`![alt](path)`）は使わない。GitHub MCPツール経由でPR本文を登録すると先頭の`!`が落ち、画像ではなくただのリンクとして保存されることがあるため（PR #20・#21で発生）。
    - `src`は**`main`ブランチ**を指す絶対URLにする（ADR 0006の「デフォルトブランチの現在の仕様を参照する」方針どおり。経緯はADR 0007）。作業ブランチを指すURLにすると、マージ後にブランチが削除された時点でリンク切れになる。
-   - 登録後に`mcp__github__pull_request_read`で本文を読み直し、`<img>`タグがそのまま残っていることを確認する。
+   - 登録後に`mcp__github__pull_request_read`（無ければ`gh pr view <番号> --json body`）で本文を読み直し、`<img>`タグがそのまま残っていることを確認する。
 
 画像は`main`ブランチのものを参照するため、マージ前のPR本文には変更前の画像が表示される（マージ後に最新の画像になる）。本文にもその旨を一言添えておくとレビュアーが混乱しない。`docs/screens/`は画面変更のたびに上書きする「現在の仕様」なので、過去にマージ済みのPRの本文に埋め込まれた画像も、その後の変更で見た目が変わりうる（詳細はADR 0006）。UIに影響しない変更（ロジックのみの修正など）ではこの手順は不要。
 

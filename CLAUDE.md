@@ -49,4 +49,13 @@ ClaudeへのMCPサーバー登録手順（Claude Code CLI / Claude Desktop）や
 
 コーディング規約・Git規約・ADR運用・`docs/demo/`の扱いなどの詳細は `.claude/rules/` 配下に分割してある。ファイルタイプ・ディレクトリに紐づくもの（コーディング規約など）は該当パスを開いたときだけ読み込まれ、Git規約・ADR運用のようにpathsを持たないものは常時読み込まれる。このファイルには、どのセッションでも常に前提となる概要だけを書く。
 
+## ハーネス（Claude Code向け設定）の構成
+
+- `.claude/rules/` — 規約・運用ルール（上記）。`.claude/`配下やこのファイルを編集するときの約束は`harness.md`。
+- `.claude/skills/` — 定型ワークフロー。`fix-and-verify`（修正→`verify-front`で動作確認→`commit-and-pr`でPR化→監視）、`pr-review`（材料を用意して`reviewer`サブエージェントにレビューさせ、結果をPRに提出）、`issue-create`、`adr`のほか、勉強会デモ用の`expense-check`・`writing-compare`がある。
+- `.claude/agents/reviewer.md` — `pr-review`から呼ばれる読み取り専用のレビュー担当（ADR 0009）。
+- `.claude/hooks/lint-front.mjs` — `front/`配下をEdit/Writeした直後にそのファイルだけESLintを実行するPostToolUse hook。
+- `.claude/settings.json` — 権限（deny/allow）とhookの登録。
+- `.mcp.json` — プロジェクトのMCPサーバー（`sample-todo-chat`）。GitHubの操作はGitHub MCPツール（`mcp__github__*`）が無い環境では`gh` CLIで行う。
+
 CLAUDE.md・`.claude/rules/`・スキルは「AIに守ってもらう指示（お願い）」、絶対に守らせたい制約（`.env`系の読み取り禁止、force push・`rm -rf`の禁止など）は `.claude/settings.json` の `permissions` で「強制」する、という役割分担にしている（ADR 0008）。個人用の設定は `.claude/settings.local.json`（ルートの`.gitignore`で除外）に置く。
