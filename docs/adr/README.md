@@ -9,7 +9,7 @@
 
 ## 一覧
 
-- [0001: プロジェクト指示をCLAUDE.mdと`.claude/rules/`に分割する](./0001-split-claude-md-into-rules.md)
+- [0001: プロジェクト指示をCLAUDE.mdと`.claude/rules/`に分割する](./0001-split-claude-md-into-rules.md)（前提ガイダンスの置き場所はADR 0010でAGENTS.mdに変更）
 - [0002: front/をNuxt(Vue)へ移行し、チャットツールとMCPサーバーを追加する](./0002-migrate-to-nuxt-and-add-chat-mcp.md)
 - [0003: UIに影響する変更ではPR本文へのスクリーンショット埋め込みを必須にする](./0003-require-pr-screenshots-for-ui-changes.md)（廃止。画像の保存場所・参照先はADR 0006で変更）
 - [0004: 画面仕様書(docs/screens)とAPI仕様(OpenAPI)を整備し、変更時の更新を必須にする](./0004-add-screen-specs-and-openapi-docs.md)（OpenAPIの作成方式はADR 0005で変更）
@@ -18,3 +18,4 @@
 - [0007: PR本文のスクリーンショットはmainブランチを指す`<img>`タグで埋め込む](./0007-embed-pr-screenshots-with-img-tag-pointing-at-main.md)
 - [0008: 危険な操作の禁止はプロジェクト共有の`.claude/settings.json`の権限設定で強制する](./0008-enforce-dangerous-operations-via-settings-json.md)
 - [0009: PRレビューの差分チェックと分類はreviewerサブエージェントに任せる](./0009-delegate-pr-review-to-reviewer-subagent.md)
+- [0010: プロジェクトの前提ガイダンスをAGENTS.mdに置き、CLAUDE.mdはそれを読み込むだけにする](./0010-move-project-guidance-to-agents-md.md)

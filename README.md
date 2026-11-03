@@ -56,9 +56,9 @@ npm start
 
 ## AIエージェント向けの指示・設定
 
-AIエージェントに作業してもらうための指示・定型ワークフロー・権限設定です。今はClaude Codeを使っているため、その形式（`CLAUDE.md`・`.claude/`）で置いています。
+AIエージェントに作業してもらうための指示・定型ワークフロー・権限設定です。前提ガイダンスは共通のファイル名`AGENTS.md`に置き、ルール・スキルなどは今使っているClaude Codeの形式（`.claude/`）で置いています。
 
-- [`CLAUDE.md`](./CLAUDE.md) — エージェントがこのリポジトリで作業する際の前提ガイダンス
+- [`AGENTS.md`](./AGENTS.md) — エージェントがこのリポジトリで作業する際の前提ガイダンス（Claude Codeは[`CLAUDE.md`](./CLAUDE.md)から読み込む）
 - [`.claude/rules/`](./.claude/rules/) — コーディング規約・Git規約・ADR運用など、パスやトピックごとに分割した詳細ルール
 - [`.claude/skills/`](./.claude/skills/) — 修正〜PR作成、PRレビュー、Issue起票、ADR作成、動作確認、勉強会デモなどの定型ワークフロー
 - [`.claude/agents/`](./.claude/agents/) — PRレビュー専任のサブエージェント（`reviewer`）
