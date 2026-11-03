@@ -32,7 +32,7 @@ npm run generate:openapi  # docs/api/openapi.json を再生成
 - `server/api/` — タスク・チャットメッセージのAPI
 - `server/utils/` — サーバー側JSONファイル（`front/.data/`）への永続化ロジック
 
-`npm run lint`はPull Request作成時に`.github/workflows/lint.yml`（GitHub Actions）でも自動実行されます。また、Claude Codeで`front/`配下のファイルを編集した際は、`.claude/hooks/lint-front.mjs`（PostToolUse hook）がそのファイルだけESLintを実行し、エラーがあればClaudeに修正させます。
+`npm run lint`はPull Request作成時に`.github/workflows/lint.yml`（GitHub Actions）でも自動実行されます。また、AIエージェントが`front/`配下のファイルを編集した際は、`.claude/hooks/lint-front.mjs`（PostToolUse hook）がそのファイルだけESLintを実行し、エラーがあればエージェントに修正させます。
 
 ## mcp-server
 
@@ -54,12 +54,13 @@ npm start
 - [`docs/adr/`](./docs/adr/) — 設計・技術選定・運用ルールの意思決定を記録したADR（Architecture Decision Record）
 - [`docs/demo/`](./docs/demo/) — 勉強会デモ用の架空資料（Slackスレッド）。実在の社内規程ではなく、アプリのビルドにも含まれません
 
-## Claude Code向け設定
+## AIエージェント向けの指示・設定
 
-- [`CLAUDE.md`](./CLAUDE.md) — Claude Codeがこのリポジトリで作業する際の前提ガイダンス
+AIエージェントに作業してもらうための指示・定型ワークフロー・権限設定です。今はClaude Codeを使っているため、その形式（`CLAUDE.md`・`.claude/`）で置いています。
+
+- [`CLAUDE.md`](./CLAUDE.md) — エージェントがこのリポジトリで作業する際の前提ガイダンス
 - [`.claude/rules/`](./.claude/rules/) — コーディング規約・Git規約・ADR運用など、パスやトピックごとに分割した詳細ルール
 - [`.claude/skills/`](./.claude/skills/) — 修正〜PR作成、PRレビュー、Issue起票、ADR作成、動作確認、勉強会デモなどの定型ワークフロー
 - [`.claude/agents/`](./.claude/agents/) — PRレビュー専任のサブエージェント（`reviewer`）
 - [`.claude/settings.json`](./.claude/settings.json) — 危険な操作のdenyと、`front/`編集時にESLintを実行するhook（[`.claude/hooks/`](./.claude/hooks/)）の登録
 - [`.mcp.json`](./.mcp.json) — チャット用MCPサーバー（`sample-todo-chat`）の登録
-- [`.claude/skills/`](./.claude/skills/) — コミット・PR作成、Issue起票、セルフレビューなど定型作業のスキル定義

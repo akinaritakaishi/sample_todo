@@ -34,7 +34,9 @@ npm ci
 
 動作確認だけしたい場合は`npm start`でstdioサーバーが起動する（MCPクライアントから接続されるまでは何も出力せず待機する）。
 
-## Claudeへの登録
+## MCPクライアントへの登録
+
+MCPに対応したクライアントであれば、stdioで`node mcp-server/index.js`を起動するよう登録すれば使える。以下はClaude Code CLIとClaude Desktopでの例。
 
 ### Claude Code CLI
 

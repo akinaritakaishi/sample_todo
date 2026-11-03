@@ -32,7 +32,7 @@ description: front/(Nuxt製アプリ)を実際に起動し、Playwrightでスク
 
 ## Windows（Git Bash）で使う場合
 
-スクリプトは`uname -s`でWindows（MINGW/MSYS/Cygwin）を判定し、次のように動作を切り替える。呼び出し方はLinuxと同じで、Git Bash（ClaudeのBashツール）から実行する。
+スクリプトは`uname -s`でWindows（MINGW/MSYS/Cygwin）を判定し、次のように動作を切り替える。呼び出し方はLinuxと同じで、Git Bash（エージェントのBashツール）から実行する。
 
 - devサーバー: `setsid`が無いため普通にバックグラウンド起動し、終了時は`taskkill /T /F`でプロセスツリーごと停止する。それでも`PORT`でLISTENしているプロセスが残っていれば、それも停止する。
 - ブラウザ: `/opt/pw-browsers`が無いため、インストール済みのChrome（無ければEdge）をPlaywrightの`channel`指定で使う。ブラウザ本体のダウンロードは不要。`PLAYWRIGHT_CHANNEL`（`chrome`/`msedge`）や`CHROMIUM_EXECUTABLE_PATH`環境変数で上書きできる。

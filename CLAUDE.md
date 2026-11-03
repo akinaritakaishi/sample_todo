@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-このファイルは、このリポジトリで作業する際にClaude Code (claude.ai/code) に向けたガイダンスを提供します。
+このファイルは、このリポジトリで作業するAIエージェント向けのガイダンスです（今はClaude Codeを使っているため、Claude Codeが自動で読み込む`CLAUDE.md`というファイル名にしています）。
 
 ## コマンド
 
@@ -12,7 +12,7 @@ npm ci
 npm run dev      # 開発サーバー起動 (Nuxt)
 npm run build    # 本番ビルド、出力先は front/.output/
 npm run preview  # 本番ビルドのプレビュー
-npm run lint      # ESLintによる静的解析（front/配下のファイルをClaude Codeで編集した際は、そのファイルだけhookでも自動実行される）
+npm run lint      # ESLintによる静的解析（エージェントがfront/配下のファイルを編集した際は、そのファイルだけhookでも自動実行される）
 npm run generate:openapi  # docs/api/openapi.json を再生成
 npm run demo:reset        # front/.data配下を削除し、次回アクセス時にシードデータへ戻す（デモの再実行前などに使用）
 ```
@@ -23,7 +23,7 @@ npm ci
 npm start        # MCPサーバーをstdioで起動（先にfront/の開発/本番サーバーを起動しておくこと）
 ```
 
-ClaudeへのMCPサーバー登録手順（Claude Code CLI / Claude Desktop）やデモの進め方は`mcp-server/README.md`を参照。`./scripts/demo-up.sh [PORT]`（リポジトリルートで実行）で、依存インストール・データのシードへのリセット・front/起動・MCPサーバー登録までを一括実行できる。停止は`./scripts/demo-down.sh [PORT]`。
+MCPクライアントへのMCPサーバー登録手順（Claude Code CLI / Claude Desktopの例）やデモの進め方は`mcp-server/README.md`を参照。`./scripts/demo-up.sh [PORT]`（リポジトリルートで実行）で、依存インストール・データのシードへのリセット・front/起動・MCPサーバー登録までを一括実行できる。停止は`./scripts/demo-down.sh [PORT]`。
 
 `npm run lint`（front/）はPull Request作成時にGitHub Actions（`.github/workflows/lint.yml`）でも自動実行されます。テストランナーは整備されていないため、`npm test` が存在する前提で作業しないこと。
 
@@ -49,9 +49,11 @@ ClaudeへのMCPサーバー登録手順（Claude Code CLI / Claude Desktop）や
 
 コーディング規約・Git規約・ADR運用・`docs/demo/`の扱いなどの詳細は `.claude/rules/` 配下に分割してある。ファイルタイプ・ディレクトリに紐づくもの（コーディング規約など）は該当パスを開いたときだけ読み込まれ、Git規約・ADR運用のようにpathsを持たないものは常時読み込まれる。このファイルには、どのセッションでも常に前提となる概要だけを書く。
 
-## Claude Code向け設定の構成
+## エージェント向けの指示・設定の構成
 
-- `.claude/rules/` — 規約・運用ルール（上記）。`.claude/`配下やこのファイルを編集するときの約束は`claude-code-config.md`。
+いずれも、今使っているClaude Codeの形式（`.claude/`配下）で置いている。
+
+- `.claude/rules/` — 規約・運用ルール（上記）。`.claude/`配下やこのファイルを編集するときの約束は`agent-config.md`。
 - `.claude/skills/` — 定型ワークフロー。`fix-and-verify`（修正→`verify-front`で動作確認→`commit-and-pr`でPR化→監視）、`pr-review`（材料を用意して`reviewer`サブエージェントにレビューさせ、結果をPRに提出）、`issue-create`、`adr`のほか、勉強会デモ用の`expense-check`・`writing-compare`がある。
 - `.claude/agents/reviewer.md` — `pr-review`から呼ばれる読み取り専用のレビュー担当（ADR 0009）。
 - `.claude/hooks/lint-front.mjs` — `front/`配下をEdit/Writeした直後にそのファイルだけESLintを実行するPostToolUse hook。

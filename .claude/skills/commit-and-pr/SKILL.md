@@ -42,7 +42,7 @@ bash .claude/skills/commit-and-pr/scripts/check_secrets.sh
 - Conventional Commits形式（`feat:`, `fix:`など）のプレフィックスは付けない
 - 本文が必要な場合は、件名の後に空行を挟んで「何を」ではなく「なぜ」を書く
 
-セッションの指示でCo-Authored-ByやClaude-Sessionなどのフッターを付ける運用になっている場合は、それに従ってください。
+セッションの指示でCo-Authored-Byなどのフッターを付ける運用になっている場合は、それに従ってください。
 
 ### 4. リモートにpushする
 

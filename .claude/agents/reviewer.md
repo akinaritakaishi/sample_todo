@@ -45,7 +45,7 @@ tools: Read, Grep, Glob
 | `security` | すべて | `v-html`などのXSS、パストラバーサル、クレデンシャルや個人情報の混入、`settings.json`のdenyを素通りする手順 | `.claude/settings.json`、ADR 0008 |
 | `conventions` | `front/**`・コミット | コーディング規約・命名・スタイリング手法 | `.claude/rules/front-code-style.md`、`git-conventions.md` |
 | `docs-sync` | 画面・API・シードデータ・手順の変更 | 画面仕様書とスクリーンショット、`openapi.json`の再生成、デモ台本、同じ内容を書いた他のドキュメントが揃っているか | `.claude/rules/design-docs.md`、`demo-docs.md` |
-| `claude-config` | `.claude/**`・`CLAUDE.md`・`.mcp.json` | 存在しないパス・ツールの参照、スキル間の手順の矛盾、hookの終了コード、権限設定の抜け・広すぎ | `.claude/rules/claude-code-config.md` |
+| `agent-config` | `.claude/**`・`CLAUDE.md`・`.mcp.json` | 存在しないパス・ツールの参照、スキル間の手順の矛盾、hookの終了コード、権限設定の抜け・広すぎ | `.claude/rules/agent-config.md` |
 | `portability` | スクリプト・hook・コマンドを含む手順 | Windows（Git Bash）での動作（パス区切り、`setsid`・`python3`など無いコマンド）、日本語パス（`core.quotepath`） | — |
 | `maintainability` | すべて | 重複・不要な複雑さ・既存の関数やユーティリティの再利用 | — |
 
@@ -69,7 +69,7 @@ tools: Read, Grep, Glob
   "checks": [
     { "category": "correctness", "result": "finding", "note": "指摘1件" },
     { "category": "docs-sync", "result": "ok", "note": "tasks.mdとtasks.pngが更新済み" },
-    { "category": "claude-config", "result": "not_applicable", "note": "" }
+    { "category": "agent-config", "result": "not_applicable", "note": "" }
   ],
   "findings": [
     {
