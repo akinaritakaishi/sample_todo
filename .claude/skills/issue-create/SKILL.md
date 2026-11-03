@@ -62,7 +62,7 @@ flowchart TD
 
 - `AGENTS.md`と`docs/Architecture.md`で全体構成を把握し、関係しそうな画面・APIを`docs/screens/`・`docs/api/openapi.json`で確認する。
 - 変更対象になりそうなファイルを実際に開き、現状の実装（バグならその原因箇所）を特定する。
-- `.claude/rules/`配下のパス限定ルール（`front-code-style.md`、`design-docs.md`など）は、該当ファイルを編集しない限り自動では読み込まれない。設計段階では編集しないので、関係するルールは自分で読んで、TODOに反映すべき規約（例: API変更時の`npm run generate:openapi`、画面変更時の`docs/screens/`更新）を拾っておく。
+- `.claude/rules/`配下のパス限定ルール（`front-code-style.md`、`design-docs.md`など）は、該当ファイルを編集しない限り自動では読み込まれない。設計段階では編集しないので、関係するルールは自分で読んで、TODOに反映すべき規約（例: API変更時の`npm run generate:openapi`、画面変更時の`docs/screens/`更新）を拾っておく。変更対象のファイルに対応する「見直す記述」は`docs/doc-map.md`の対応表で確認し、更新が必要なものをTODOに含める。
 - 調査中に依頼の範囲外の不具合や改善点を見つけた場合は、本Issueに混ぜず、別Issueの候補として手順5で提示する（勝手に起票しない）。今回のIssueの実装に影響する場合（前提になる、誤動作を引き起こすなど）は、依存関係として3.5の分割案に含める。
 
 #### 3.2. 修正概要を書く

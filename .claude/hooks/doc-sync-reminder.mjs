@@ -93,7 +93,9 @@ function addNameStatus(changes, output) {
   for (let i = 0; i < tokens.length; ) {
     const status = tokens[i++]
     const paths = /^[RC]/.test(status) ? [tokens[i++], tokens[i++]] : [tokens[i++]]
-    for (const file of paths) changes.set(file, { structural: status[0] !== 'M' && status[0] !== 'T' })
+    // A file can appear in several outputs (working tree and commits); keep `structural` if any says so.
+    const structural = status[0] !== 'M' && status[0] !== 'T'
+    for (const file of paths) changes.set(file, { structural: structural || (changes.get(file)?.structural ?? false) })
   }
 }
 
