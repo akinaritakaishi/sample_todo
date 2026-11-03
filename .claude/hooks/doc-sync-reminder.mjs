@@ -1,10 +1,12 @@
 #!/usr/bin/env node
 // Stop hook: compare the branch's changes with docs/doc-map.md and, when a mapped source changed but
 // its related docs did not, ask the agent to review them before finishing.
+// Only sources touched in this session (uncommitted, untracked, or committed since the session started)
+// trigger a reminder, so review-only sessions are not asked to edit docs for earlier commits.
 // Exit code 2 sends stderr back to the agent. Each (source pattern, doc) pair is reported at most once
 // per session, so the agent can finish after judging that no update is needed.
 import { spawnSync } from 'node:child_process'
-import { existsSync, readFileSync, writeFileSync } from 'node:fs'
+import { closeSync, existsSync, openSync, readFileSync, readSync, statSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
 
 const MAP_FILE = 'docs/doc-map.md'
@@ -46,7 +48,8 @@ function globToRegExp(glob) {
 }
 
 function parseMap(markdown) {
-  const section = markdown.split(/^## 対応表\s*$/m)[1] ?? ''
+  // Only the table under "## 対応表", up to the next "## " heading.
+  const section = (markdown.split(/^## 対応表\s*$/m)[1] ?? '').split(/^## /m)[0]
   const rules = []
   for (const line of section.split(/\r?\n/)) {
     const cells = line.split('|').slice(1, -1).map(cell => cell.trim())
@@ -67,26 +70,61 @@ function findBase() {
   return 'HEAD'
 }
 
-// Changed files on the branch (committed since the merge base, plus uncommitted and untracked ones).
-// `structural` marks additions, deletions and renames.
-function collectChanges() {
-  const diff = git(['diff', '--name-status', '-z', '--find-renames', findBase()])
-  const untracked = git(['ls-files', '--others', '--exclude-standard', '-z'])
-  if (diff === null || untracked === null) return null
+// Session start time: the first timestamp in the transcript, or the transcript file's creation time.
+function sessionStart() {
+  const transcript = input.transcript_path
+  if (!transcript || !existsSync(transcript)) return null
+  try {
+    const fd = openSync(transcript, 'r')
+    const buffer = Buffer.alloc(64 * 1024)
+    const bytes = readSync(fd, buffer, 0, buffer.length, 0)
+    closeSync(fd)
+    const match = buffer.toString('utf8', 0, bytes).match(/"timestamp":"([^"]+)"/)
+    if (match) return match[1]
+    return statSync(transcript).birthtime.toISOString()
+  } catch {
+    return null
+  }
+}
 
-  const changes = new Map()
-  const tokens = diff.split('\0').filter(Boolean)
+// Parse `git ... --name-status -z` output into the map. `structural` marks additions, deletions and renames.
+function addNameStatus(changes, output) {
+  const tokens = output.split('\0').filter(Boolean)
   for (let i = 0; i < tokens.length; ) {
     const status = tokens[i++]
     const paths = /^[RC]/.test(status) ? [tokens[i++], tokens[i++]] : [tokens[i++]]
     for (const file of paths) changes.set(file, { structural: status[0] !== 'M' && status[0] !== 'T' })
   }
-  for (const file of untracked.split('\0').filter(Boolean)) changes.set(file, { structural: true })
-  return changes
 }
 
-const changes = collectChanges()
-if (!changes || changes.size === 0) process.exit(0)
+// Changed files on the branch (committed since the merge base, plus uncommitted and untracked ones),
+// and the subset touched in this session (uncommitted, untracked, or in commits since the session started).
+function collectChanges() {
+  const base = findBase()
+  const diff = git(['diff', '--name-status', '-z', '--find-renames', base])
+  const working = git(['diff', '--name-status', '-z', '--find-renames', 'HEAD'])
+  const untracked = git(['ls-files', '--others', '--exclude-standard', '-z'])
+  if (diff === null || working === null || untracked === null) return null
+
+  const branch = new Map()
+  addNameStatus(branch, diff)
+  const session = new Map()
+  addNameStatus(session, working)
+  const since = sessionStart()
+  if (since && base !== 'HEAD') {
+    const log = git(['log', '--name-status', '-z', '--find-renames', '--format=', `--since=${since}`, `${base}..HEAD`])
+    if (log) addNameStatus(session, log)
+  }
+  for (const file of untracked.split('\0').filter(Boolean)) {
+    branch.set(file, { structural: true })
+    session.set(file, { structural: true })
+  }
+  return { branch, session }
+}
+
+const collected = collectChanges()
+if (!collected || collected.session.size === 0) process.exit(0)
+const { branch: changes, session: sessionChanges } = collected
 
 const statePath = git(['rev-parse', '--git-path', STATE_FILE])?.trim()
 const resolvedStatePath = statePath ? path.resolve(projectDir, statePath) : null
@@ -102,7 +140,7 @@ const reminded = new Set(state[sessionId] ?? [])
 const findings = []
 for (const rule of parseMap(readFileSync(mapPath, 'utf8'))) {
   const sourceMatchers = rule.sources.map(globToRegExp)
-  const triggers = [...changes]
+  const triggers = [...sessionChanges]
     .filter(([file, change]) => (!rule.addDeleteOnly || change.structural) && sourceMatchers.some(re => re.test(file)))
     .map(([file]) => file)
   if (triggers.length === 0) continue
@@ -133,7 +171,7 @@ if (resolvedStatePath) {
 
 const lines = findings.map(({ triggers, docs, note }) => {
   const shown = triggers.slice(0, 3).join(', ') + (triggers.length > 3 ? ` ほか${triggers.length - 3}件` : '')
-  return `- ${shown} が変更されています → ${docs.join(', ')} を見直してください（${note}）`
+  return `- このセッションで ${shown} が変更されています → ${docs.join(', ')} を見直してください（${note}）`
 })
 process.stderr.write(
   `${MAP_FILE} の対応表で、変更に対応する記述がまだ更新されていない箇所があります。\n` +
