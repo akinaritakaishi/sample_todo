@@ -29,7 +29,7 @@ MCPクライアントへのMCPサーバー登録手順（Claude Code CLI / Claud
 
 ## アーキテクチャ
 
-詳細な説明は `docs/Architecture.md` を参照。画面ごとの仕様は `docs/screens/`、UIの配色・強調表示のルールは `docs/design-guidelines.md`、APIの仕様は `docs/api/openapi.json`（`front/server/api/**/*.js`の`defineRouteMeta`から`npm run generate:openapi`で自動生成、詳細は`docs/api/README.md`）を参照。要点のみここに記す。
+詳細な説明は `docs/Architecture.md` を参照。画面ごとの仕様は `docs/screens/`、UIの配色・強調表示のルールは `docs/design-guidelines.md`、APIの仕様は `docs/api/openapi.json`（`front/server/api/**/*.js`の`defineRouteMeta`から`npm run generate:openapi`で自動生成、詳細は`docs/api/README.md`）を参照。あるファイルを変えたときに見直すべき記述の対応表は`docs/doc-map.md`にある。要点のみここに記す。
 
 `front/` は Nuxt 4 (Vue 3) 製のアプリで、ToDo画面（`/`）とチャットツール画面（`/chat`）の2ページを持つ。ロジックはクライアント側の `app/` とサーバー側の `server/` に分かれる。
 
@@ -57,6 +57,7 @@ MCPクライアントへのMCPサーバー登録手順（Claude Code CLI / Claud
 - `.claude/skills/` — 定型ワークフロー。`fix-and-verify`（修正→`verify-front`で動作確認→`commit-and-pr`でPR化→監視）、`pr-review`（材料を用意して`reviewer`サブエージェントにレビューさせ、結果をPRに提出）、`issue-create`、`adr`のほか、勉強会デモ用の`expense-check`・`writing-compare`がある。
 - `.claude/agents/reviewer.md` — `pr-review`から呼ばれる読み取り専用のレビュー担当（ADR 0009）。
 - `.claude/hooks/lint-front.mjs` — `front/`配下をEdit/Writeした直後にそのファイルだけESLintを実行するPostToolUse hook。
+- `.claude/hooks/doc-sync-reminder.mjs` — ターンの終わりに、そのセッションで変更したファイルを`docs/doc-map.md`と突き合わせ、対応する記述が未更新なら見直しを促すStop hook（同じセッションで同じ組み合わせは1回だけ）。
 - `.claude/settings.json` — 権限（deny/allow）とhookの登録。
 - `.mcp.json` — プロジェクトのMCPサーバー（`sample-todo-chat`）。GitHubの操作はGitHub MCPツール（`mcp__github__*`）が無い環境では`gh` CLIで行う。
 

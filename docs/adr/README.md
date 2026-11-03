@@ -19,3 +19,4 @@
 - [0008: 危険な操作の禁止はプロジェクト共有の`.claude/settings.json`の権限設定で強制する](./0008-enforce-dangerous-operations-via-settings-json.md)
 - [0009: PRレビューの差分チェックと分類はreviewerサブエージェントに任せる](./0009-delegate-pr-review-to-reviewer-subagent.md)
 - [0010: プロジェクトの前提ガイダンスをAGENTS.mdに置き、CLAUDE.mdはそれを読み込むだけにする](./0010-move-project-guidance-to-agents-md.md)
+- [0011: 「変更したら見直す記述」をdocs/doc-map.mdの対応表に集約し、Stop hookで未更新を知らせる](./0011-track-doc-dependencies-in-doc-map.md)
