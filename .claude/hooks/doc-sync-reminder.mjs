@@ -159,6 +159,8 @@ for (const rule of parseMap(readFileSync(mapPath, 'utf8'))) {
 if (findings.length === 0) process.exit(0)
 
 if (resolvedStatePath) {
+  // Re-insert so the current session is the newest key and is never pruned below.
+  delete state[sessionId]
   state[sessionId] = [...reminded]
   const sessions = Object.keys(state)
   for (const old of sessions.slice(0, Math.max(0, sessions.length - MAX_SESSIONS))) delete state[old]
